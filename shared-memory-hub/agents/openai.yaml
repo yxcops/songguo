@@ -1,0 +1,3 @@
+display_name: Shared Memory Hub
+short_description: 创建和使用跨智能体共享记忆库。
+default_prompt: 请使用 shared-memory-hub Skill，帮我创建或检查一个 AI智能体共享记忆库。创建前先问我保存位置。
