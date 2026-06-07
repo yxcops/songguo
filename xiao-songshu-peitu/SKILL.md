@@ -1,9 +1,9 @@
 ---
-name: ian-squirrel-illustrations
+name: xiao-songshu-peitu
 description: 生成带固定小松鼠 IP 的中文内容配图。用于用户要求为中文文章、帖子、小红书、公众号、Notion 文档、工作流文档、方法论、流程、结构、状态、隐喻或观点生成“小松鼠”“松鼠IP”“正文配图”“文章插图”“配图建议”“shot list”“参考图保持角色”等任务；默认使用参考图里的橙棕毛绒小松鼠、深绿色卷曲尾巴和蓝色发光线路。
 ---
 
-# Ian 小松鼠正文配图
+# 小松鼠配图
 
 ## 核心定位
 
@@ -73,7 +73,7 @@ description: 生成带固定小松鼠 IP 的中文内容配图。用于用户要
 如果使用 ListenHub image-gen 或其他支持参考图的工具，必须把 `assets/character-reference/squirrel-main.png` 作为参考图传入。比如 ListenHub CLI 应添加：
 
 ```bash
---reference "$HOME/.codex/skills/ian-squirrel-illustrations/assets/character-reference/squirrel-main.png"
+--reference "$HOME/.codex/skills/xiao-songshu-peitu/assets/character-reference/squirrel-main.png"
 ```
 
 如果当前工具不支持参考图，则只使用文字提示词，但要明确告诉用户：角色一致性会比参考图模式弱。
@@ -97,7 +97,7 @@ description: 生成带固定小松鼠 IP 的中文内容配图。用于用户要
 如果用户在 workspace 内工作，把最终图保存到：
 
 ```text
-assets/<article-slug>-squirrel-illustrations/
+assets/<article-slug>-xiao-songshu-peitu/
 ```
 
 按顺序命名：

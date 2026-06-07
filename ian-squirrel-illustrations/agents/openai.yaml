@@ -1,6 +1,0 @@
-interface:
-  display_name: "Ian 小松鼠配图"
-  short_description: "用固定小松鼠IP为中文内容生成正文配图"
-  default_prompt: "Use $ian-squirrel-illustrations to 为这篇中文内容设计小松鼠风格正文配图。"
-policy:
-  allow_implicit_invocation: true

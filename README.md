@@ -23,7 +23,7 @@
 https://github.com/yxcops/songguo/tree/main/shared-memory-hub
 ```
 
-### ian-squirrel-illustrations
+### 小松鼠配图
 
 用于为中文文章、帖子、小红书、公众号、Notion 文档、工作流说明生成带固定小松鼠 IP 的正文配图。
 
@@ -38,7 +38,7 @@ https://github.com/yxcops/songguo/tree/main/shared-memory-hub
 安装链接：
 
 ```text
-https://github.com/yxcops/songguo/tree/main/ian-squirrel-illustrations
+https://github.com/yxcops/songguo/tree/main/xiao-songshu-peitu
 ```
 
 ## shared-memory-hub 怎么启动
@@ -78,12 +78,12 @@ https://github.com/yxcops/songguo/tree/main/ian-squirrel-illustrations
 等我明确确认后再创建。
 ```
 
-## ian-squirrel-illustrations 怎么启动
+## 小松鼠配图怎么启动
 
 安装 Skill 后，可以对 AI 说：
 
 ```text
-请使用 ian-squirrel-illustrations Skill，帮我为这篇中文内容设计 3 张小松鼠风格正文配图。
+请使用 小松鼠配图（xiao-songshu-peitu）Skill，帮我为这篇中文内容设计 3 张小松鼠风格正文配图。
 
 先给配图策略，不要直接生成图片。
 每张图说明放在哪个段落后、表达什么、画面里小松鼠在做什么、建议比例是多少。
@@ -92,7 +92,7 @@ https://github.com/yxcops/songguo/tree/main/ian-squirrel-illustrations
 如果要直接生成图片，可以说：
 
 ```text
-请使用 ian-squirrel-illustrations Skill，为这篇内容生成 1 张公众号正文配图。
+请使用 小松鼠配图（xiao-songshu-peitu）Skill，为这篇内容生成 1 张公众号正文配图。
 
 请使用 Skill 里的小松鼠参考图保持角色一致。
 ```

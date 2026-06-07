@@ -54,7 +54,7 @@ One image explains only one core idea. The information structure should be more 
 生成前仍需按项目规则向用户确认，因为会消耗额度。
 
 ```bash
-REFERENCE_IMAGE="$HOME/.codex/skills/ian-squirrel-illustrations/assets/character-reference/squirrel-main.png"
+REFERENCE_IMAGE="$HOME/.codex/skills/xiao-songshu-peitu/assets/character-reference/squirrel-main.png"
 
 listenhub image create \
   --prompt "<上面的完整提示词>" \
