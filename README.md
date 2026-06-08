@@ -41,6 +41,25 @@ https://github.com/yxcops/songguo/tree/main/shared-memory-hub
 https://github.com/yxcops/songguo/tree/main/xiao-songshu-peitu
 ```
 
+### Codex Skill 启动台
+
+用于把一组 Codex Skills 整理成 Codex 客户端里的可视化入口项目：每个 Skill 一个入口文件夹，每个入口一个专属对话。
+
+它支持：
+
+- 全局安装 Skill 后集中做可视化入口
+- 新建专门启动台项目
+- 放进已有 Codex 项目
+- 为每个入口写 `AGENTS.md`
+- 为每个 Skill 创建专属 Codex 对话
+- 检查入口文件里是否混入账号、API key、token 等隐私信息
+
+安装链接：
+
+```text
+https://github.com/yxcops/songguo/tree/main/codex-skill-launchpad
+```
+
 ## shared-memory-hub 怎么启动
 
 安装 Skill 后，它不会自动创建共享记忆库，也不会自动创建定时任务。
@@ -97,14 +116,36 @@ https://github.com/yxcops/songguo/tree/main/xiao-songshu-peitu
 请使用 Skill 里的小松鼠参考图保持角色一致。
 ```
 
+## Codex Skill 启动台怎么启动
+
+这个 Skill 只面向 Codex 客户端。它不会替你上传 GitHub，也不会自动发布内容。
+
+安装后，可以对 Codex 说：
+
+```text
+请使用 codex-skill-launchpad Skill，把下面这些 Skill 整理成一个可视化入口项目。
+
+要求：
+1. Skill 本体全局安装。
+2. 入口放到 Codex/workspaces/我的Skill启动台。
+3. 每个 Skill 一个入口文件夹。
+4. 每个入口写 AGENTS.md。
+5. 每个 Skill 创建一个专属 Codex 对话。
+6. 发布、抓取、扣费生成类入口必须默认先确认，不要直接执行。
+7. 完成后检查新文件里没有账号、API key、token、cookie。
+
+Skill 列表：
+- 文章封面图：baoyu-cover-image
+- 信息图：baoyu-infographic
+- 发微博：baoyu-post-to-weibo
+```
+
 ## 平台兼容
 
-当前面向：
+不同 Skill 的平台兼容范围不同：
 
-- Codex
-- Hermes
-- Claude Code
-- OpenClaw
-- 其他能读取和写入本地 Markdown 文件的 AI Agent
+- `shared-memory-hub` 面向 Codex、Hermes、Claude Code、OpenClaw，以及其他能读取和写入本地 Markdown 文件的 AI Agent。
+- `xiao-songshu-peitu` 面向能读取 Skill 并调用图片生成能力的 AI Agent。
+- `codex-skill-launchpad` 只面向 Codex 客户端，因为它依赖 Codex 的项目、文件夹入口和专属对话。
 
-不同平台的自动化能力不一样。这个 Skill 提供规则、模板和脚本，但不会在安装后自动启动后台任务。
+不同平台的自动化能力不一样。这些 Skill 提供规则、模板或脚本，但不会在安装后自动启动后台任务。

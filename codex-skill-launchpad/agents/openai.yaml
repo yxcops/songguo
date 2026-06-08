@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Skill 启动台"
+  short_description: "把 Codex Skills 整理成可点击的项目入口和专属对话。"
+  default_prompt: "请使用 $codex-skill-launchpad，把这些 Codex Skills 整理成一个可视化入口项目，并为每个 Skill 创建专属对话。"
