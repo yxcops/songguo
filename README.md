@@ -1,151 +1,161 @@
-# songguo
+# 松果 Skills
 
-这里收集我自用并逐步公开的 AI Skills。
+[English](./README.en.md) | 中文
+
+这里收集我自用并逐步公开的 AI Skills。每个 Skill 都是一个可以被 Agent 读取的结构化工作流，用来把重复任务做得更稳、更省心。
+
+[![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
+[![Skills](https://img.shields.io/badge/Skills-3-10B981?style=for-the-badge)](#skills)
+[![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
+
+![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
+![Claude Code](https://img.shields.io/badge/Claude_Code-Skill-D97706?style=flat-square)
+![Hermes](https://img.shields.io/badge/Hermes-Skill-3B82F6?style=flat-square)
+![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-8B5CF6?style=flat-square)
+
+## 目录
+
+| Skill | 一句话 | 适合 | 安装链接 |
+|---|---|---|---|
+| [shared-memory-hub](#shared-memory-hub) | 给多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库 | 长期规则、经验沉淀、多 Agent 协作 | [安装](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
+| [xiao-songshu-peitu](#xiao-songshu-peitu) | 用固定小松鼠 IP 为中文内容生成正文配图方案和提示词 | 公众号、小红书、Notion、工作流文档配图 | [安装](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
+| [codex-skill-launchpad](#codex-skill-launchpad) | 把 Codex Skills 做成可视化入口项目和专属对话 | Codex 客户端 Skill 管理 | [安装](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
+
+## 安装方式
+
+在 Codex、Claude Code、Hermes、OpenClaw 等支持 Skill 的 Agent 里，直接说：
+
+```text
+帮我安装这个 skill：https://github.com/yxcops/songguo-skills/tree/main/<skill-name>
+```
+
+把 `<skill-name>` 换成你想安装的目录名，例如：
+
+```text
+帮我安装这个 skill：https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu
+```
+
+不同 Agent 的安装目录和权限不同。安装前建议让 Agent 先读取 `SKILL.md`，确认它会做什么、不会做什么。
 
 ## Skills
 
-### shared-memory-hub
+<a id="shared-memory-hub"></a>
 
-用于让 Codex、Hermes、Claude Code、OpenClaw 等智能体共用一套 Obsidian 或本地 Markdown 共享记忆库。
+### shared-memory-hub（共享记忆库）
 
-它支持：
+让 Codex、Hermes、Claude Code、OpenClaw 等智能体共用一套 Obsidian 或本地 Markdown 共享记忆库。
 
-- 核心规则
-- 可复用经验库
-- 候选确认清单
-- 聊天摘要
-- 项目资料
-- 归档废弃
+它不是原始聊天记录垃圾桶，而是用来保存长期可复用的规则、经验、项目资料和候选沉淀。
+
+**适合**
+
+- 你同时使用多个 AI Agent，希望它们共享一套长期规则。
+- 你想把经验分成核心规则、可复用经验、候选清单、聊天摘要和项目资料。
+- 你希望每天或每周定期整理 AI 对话，但不想让 Agent 乱改核心规则。
+
+**不适合**
+
+- 只想临时记一句话。
+- 想把所有聊天记录原封不动塞进记忆库。
+- 想自动创建 Notion 数据库。这个 Skill 默认只处理本地 Markdown 或 Obsidian 文件夹。
+
+**怎么触发**
+
+```text
+请使用 shared-memory-hub Skill，帮我创建一个 AI 智能体共享记忆库。
+```
+
+```text
+请使用 shared-memory-hub Skill，检查这个共享记忆库结构是否完整。
+```
 
 安装链接：
 
 ```text
-https://github.com/yxcops/songguo/tree/main/shared-memory-hub
+https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 ```
 
-### 小松鼠配图
+<a id="xiao-songshu-peitu"></a>
 
-用于为中文文章、帖子、小红书、公众号、Notion 文档、工作流说明生成带固定小松鼠 IP 的正文配图。
+### xiao-songshu-peitu（小松鼠配图）
 
-它支持：
+为中文文章、帖子、小红书、公众号、Notion 文档和工作流说明生成带固定小松鼠 IP 的正文配图方案和提示词。
 
-- 固定小松鼠角色参考图
-- 中文正文配图策略
-- 单张生图提示词
-- 小红书、公众号、视频封面等比例建议
-- 生成后质量检查
+默认小松鼠形象是橙棕色毛绒身体、奶油脸颊、深绿色卷曲尾巴和蓝色发光线路。它更像一个信息整理员，而不是普通可爱头像。
 
-安装链接：
+**适合**
 
-```text
-https://github.com/yxcops/songguo/tree/main/xiao-songshu-peitu
-```
+- 给中文长文设计正文配图。
+- 给公众号、小红书、Notion、方法论文档做视觉解释。
+- 想保持同一个小松鼠 IP 的角色一致性。
+- 先要配图策略、shot list 或单张生图提示词。
 
-### Codex Skill 启动台
+**不适合**
 
-用于把一组 Codex Skills 整理成 Codex 客户端里的可视化入口项目：每个 Skill 一个入口文件夹，每个入口一个专属对话。
+- 想要完全随机风格的普通 AI 图片。
+- 想直接发布到社交平台。
+- 不需要固定角色一致性的简单配图。
 
-它支持：
-
-- 全局安装 Skill 后集中做可视化入口
-- 新建专门启动台项目
-- 放进已有 Codex 项目
-- 为每个入口写 `AGENTS.md`
-- 为每个 Skill 创建专属 Codex 对话
-- 检查入口文件里是否混入账号、API key、token 等隐私信息
-
-安装链接：
-
-```text
-https://github.com/yxcops/songguo/tree/main/codex-skill-launchpad
-```
-
-## shared-memory-hub 怎么启动
-
-安装 Skill 后，它不会自动创建共享记忆库，也不会自动创建定时任务。
-
-你可以对 AI 说：
-
-```text
-请使用 shared-memory-hub Skill，帮我创建一个 AI智能体共享记忆库。
-
-创建前先问我保存位置。可以保存在 Obsidian 库里，也可以保存在普通本地文件夹里。
-
-不要自动写入未确认的路径。
-
-创建后请运行检查脚本，确认目录完整、入口文件存在、核心规则存在、没有旧目录名残留。
-
-创建完成后，请提醒我是否继续创建自动化任务，但不要直接创建。
-```
-
-## 怎么创建自动化任务
-
-创建共享记忆库后，可以继续对 AI 说：
-
-```text
-请使用 shared-memory-hub Skill，根据模板帮我创建两个自动化任务：
-
-1. 每日聊天摘要整理
-2. 每周候选确认审阅
-
-创建前请先说明：
-- 每个任务会读取什么
-- 每个任务会写入什么
-- 每个任务什么时候运行
-- 哪些目录不能自动修改
-
-等我明确确认后再创建。
-```
-
-## 小松鼠配图怎么启动
-
-安装 Skill 后，可以对 AI 说：
+**怎么触发**
 
 ```text
 请使用 小松鼠配图（xiao-songshu-peitu）Skill，帮我为这篇中文内容设计 3 张小松鼠风格正文配图。
-
-先给配图策略，不要直接生成图片。
-每张图说明放在哪个段落后、表达什么、画面里小松鼠在做什么、建议比例是多少。
 ```
 
-如果要直接生成图片，可以说：
-
 ```text
-请使用 小松鼠配图（xiao-songshu-peitu）Skill，为这篇内容生成 1 张公众号正文配图。
-
-请使用 Skill 里的小松鼠参考图保持角色一致。
+请使用 xiao-songshu-peitu，为这篇内容生成 1 张公众号正文配图，并保持小松鼠角色一致。
 ```
 
-## Codex Skill 启动台怎么启动
-
-这个 Skill 只面向 Codex 客户端。它不会替你上传 GitHub，也不会自动发布内容。
-
-安装后，可以对 Codex 说：
+安装链接：
 
 ```text
-请使用 codex-skill-launchpad Skill，把下面这些 Skill 整理成一个可视化入口项目。
+https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu
+```
 
-要求：
-1. Skill 本体全局安装。
-2. 入口放到 Codex/workspaces/我的Skill启动台。
-3. 每个 Skill 一个入口文件夹。
-4. 每个入口写 AGENTS.md。
-5. 每个 Skill 创建一个专属 Codex 对话。
-6. 发布、抓取、扣费生成类入口必须默认先确认，不要直接执行。
-7. 完成后检查新文件里没有账号、API key、token、cookie。
+<a id="codex-skill-launchpad"></a>
 
-Skill 列表：
-- 文章封面图：baoyu-cover-image
-- 信息图：baoyu-infographic
-- 发微博：baoyu-post-to-weibo
+### codex-skill-launchpad（Codex Skill 启动台）
+
+把一组全局安装的 Codex Skills 整理成 Codex 客户端里的可视化入口项目：每个 Skill 一个入口文件夹，每个入口一个专属对话。
+
+它解决的问题是：Skill 装多以后不容易看见，也不方便直接点进固定对话使用。
+
+**适合**
+
+- 你在 Codex 客户端里安装了很多 Skill，想做一个可视化入口。
+- 你希望每个 Skill 有一个固定文件夹和一个专属对话。
+- 你想把入口放到一个专门项目，或者放进已有的 Codex 项目。
+
+**不适合**
+
+- Hermes、Claude Code 这类没有 Codex 桌面项目和专属对话结构的平台。
+- 真实生成图片、发微博、发公众号、抓取 X 内容。它只负责入口编排，不负责执行这些业务动作。
+- 想把 Skill 系统级锁死到某个对话。这个 Skill 提供的是使用约定，不是系统锁。
+
+**怎么触发**
+
+```text
+请使用 codex-skill-launchpad Skill，把下面这些 Skill 整理成一个可视化入口项目，并为每个 Skill 创建专属对话。
+```
+
+安装链接：
+
+```text
+https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 ```
 
 ## 平台兼容
 
-不同 Skill 的平台兼容范围不同：
+| Skill | Codex | Claude Code | Hermes | OpenClaw | 说明 |
+|---|---|---|---|---|---|
+| shared-memory-hub | 支持 | 支持 | 支持 | 支持 | 需要能读写本地 Markdown 文件 |
+| xiao-songshu-peitu | 支持 | 支持 | 视工具而定 | 视工具而定 | 需要图片生成能力或可交付提示词 |
+| codex-skill-launchpad | 支持 | 不推荐 | 不推荐 | 不推荐 | 依赖 Codex 客户端项目和专属对话 |
 
-- `shared-memory-hub` 面向 Codex、Hermes、Claude Code、OpenClaw，以及其他能读取和写入本地 Markdown 文件的 AI Agent。
-- `xiao-songshu-peitu` 面向能读取 Skill 并调用图片生成能力的 AI Agent。
-- `codex-skill-launchpad` 只面向 Codex 客户端，因为它依赖 Codex 的项目、文件夹入口和专属对话。
+## 关于
 
-不同平台的自动化能力不一样。这些 Skill 提供规则、模板或脚本，但不会在安装后自动启动后台任务。
+这个仓库会逐步收集我自己常用、可复用、适合公开分享的 AI Skills。
+
+如果你要单独分享某一个 Skill，推荐直接发它的安装链接；如果你要分享整个合集，发这个仓库首页即可。
+
+MIT License，自由使用、修改和再分发。
