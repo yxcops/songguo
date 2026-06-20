@@ -1,4 +1,4 @@
-# Songguo Skills
+# 🧩 Songguo Skills
 
 [中文](./README.md) | English
 
@@ -13,29 +13,29 @@ This repository collects AI Skills that I use, refine, and gradually publish. Ea
 ![Hermes](https://img.shields.io/badge/Hermes-Skill-3B82F6?style=flat-square)
 ![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-8B5CF6?style=flat-square)
 
-## Featured Skills
+## ⭐ Featured Skills
 
-### AI Memory & Collaboration
+### 🧠 AI Memory & Collaboration
 
-[**shared-memory-hub**](#shared-memory-hub) - Create and maintain a shared Obsidian or local Markdown memory vault for Codex, Hermes, Claude Code, OpenClaw, and other Agents.
+[**🧠 shared-memory-hub**](#shared-memory-hub) - Create and maintain a shared Obsidian or local Markdown memory vault for Codex, Hermes, Claude Code, OpenClaw, and other Agents.
 
-### Content & Visuals
+### 🎨 Content & Visuals
 
-[**xiao-songshu-peitu**](#xiao-songshu-peitu) - Create fixed squirrel-IP illustration plans and prompts for Chinese articles, posts, WeChat articles, Xiaohongshu notes, and workflow docs.
+[**🐿️ xiao-songshu-peitu**](#xiao-songshu-peitu) - Create fixed squirrel-IP illustration plans and prompts for Chinese articles, posts, WeChat articles, Xiaohongshu notes, and workflow docs.
 
-### Codex Workflow
+### 🚀 Codex Workflow
 
-[**codex-skill-launchpad**](#codex-skill-launchpad) - Turn installed Codex Skills into visible entry folders and dedicated Codex chats.
+[**🚀 codex-skill-launchpad**](#codex-skill-launchpad) - Turn installed Codex Skills into visible entry folders and dedicated Codex chats.
 
-## Full Catalog
+## 📦 Full Catalog
 
 | Skill | One-liner | Best for | Install |
 |---|---|---|---|
-| [shared-memory-hub](#shared-memory-hub) | Build a shared Obsidian or Markdown memory vault for multiple AI Agents | Long-term rules, reusable experience, multi-Agent collaboration | [Install](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
-| [xiao-songshu-peitu](#xiao-songshu-peitu) | Create fixed squirrel-IP illustration plans and prompts for Chinese content | WeChat articles, Xiaohongshu, Notion docs, workflow explainers | [Install](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
-| [codex-skill-launchpad](#codex-skill-launchpad) | Turn Codex Skills into visible entry folders and dedicated Codex chats | Codex desktop Skill management | [Install](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
+| [🧠 shared-memory-hub](#shared-memory-hub) | Build a shared Obsidian or Markdown memory vault for multiple AI Agents | Long-term rules, reusable experience, multi-Agent collaboration | [Install](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
+| [🐿️ xiao-songshu-peitu](#xiao-songshu-peitu) | Create fixed squirrel-IP illustration plans and prompts for Chinese content | WeChat articles, Xiaohongshu, Notion docs, workflow explainers | [Install](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
+| [🚀 codex-skill-launchpad](#codex-skill-launchpad) | Turn Codex Skills into visible entry folders and dedicated Codex chats | Codex desktop Skill management | [Install](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
 
-## Installation
+## ⚙️ Installation
 
 In Codex, Claude Code, Hermes, OpenClaw, or another Agent that supports Skills, say:
 
@@ -51,9 +51,13 @@ Install this skill: https://github.com/yxcops/songguo-skills/tree/main/xiao-song
 
 Different Agents use different installation paths and permissions. Before installing, ask the Agent to read `SKILL.md` and summarize what the Skill does and does not do.
 
-## Skills
+<a id="skills"></a>
 
-### shared-memory-hub
+## 🧰 Skills
+
+<a id="shared-memory-hub"></a>
+
+### 🧠 shared-memory-hub
 
 Builds a shared Obsidian or local Markdown memory vault for Codex, Hermes, Claude Code, OpenClaw, and other Agents.
 
@@ -87,7 +91,9 @@ Install link:
 https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 ```
 
-### xiao-songshu-peitu
+<a id="xiao-songshu-peitu"></a>
+
+### 🐿️ xiao-songshu-peitu
 
 Creates article illustration plans and prompts for Chinese articles, posts, Xiaohongshu notes, WeChat articles, Notion docs, and workflow explainers using a fixed squirrel character IP.
 
@@ -122,7 +128,9 @@ Install link:
 https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu
 ```
 
-### codex-skill-launchpad
+<a id="codex-skill-launchpad"></a>
+
+### 🚀 codex-skill-launchpad
 
 Organizes globally installed Codex Skills into a visible Codex desktop entry project: one entry folder per Skill, and one dedicated chat per entry.
 
@@ -152,7 +160,7 @@ Install link:
 https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 ```
 
-## Compatibility
+## 🧪 Compatibility
 
 | Skill | Codex | Claude Code | Hermes | OpenClaw | Notes |
 |---|---|---|---|---|---|
@@ -160,7 +168,7 @@ https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 | xiao-songshu-peitu | Supported | Supported | Tool-dependent | Tool-dependent | Needs image-generation ability, or can deliver prompts only |
 | codex-skill-launchpad | Supported | Not recommended | Not recommended | Not recommended | Depends on Codex desktop projects and dedicated chats |
 
-## About
+## 📌 About
 
 This repository will gradually collect AI Skills that are useful, reusable, and suitable for public sharing.
 
