@@ -13,7 +13,21 @@
 ![Hermes](https://img.shields.io/badge/Hermes-Skill-3B82F6?style=flat-square)
 ![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-8B5CF6?style=flat-square)
 
-## 目录
+## 精选 Skill
+
+### AI 记忆与协作
+
+[**shared-memory-hub**](#shared-memory-hub) - 给 Codex、Hermes、Claude Code、OpenClaw 等多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库。
+
+### 中文内容与配图
+
+[**xiao-songshu-peitu**](#xiao-songshu-peitu) - 用固定小松鼠 IP 为中文文章、帖子、小红书、公众号和工作流文档生成配图方案和提示词。
+
+### Codex 工作流
+
+[**codex-skill-launchpad**](#codex-skill-launchpad) - 把已经安装的 Codex Skills 做成可见、可点击、可复用的入口文件夹和专属对话。
+
+## 完整目录
 
 | Skill | 一句话 | 适合 | 安装链接 |
 |---|---|---|---|

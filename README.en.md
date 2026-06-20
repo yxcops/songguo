@@ -13,7 +13,21 @@ This repository collects AI Skills that I use, refine, and gradually publish. Ea
 ![Hermes](https://img.shields.io/badge/Hermes-Skill-3B82F6?style=flat-square)
 ![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-8B5CF6?style=flat-square)
 
-## Catalog
+## Featured Skills
+
+### AI Memory & Collaboration
+
+[**shared-memory-hub**](#shared-memory-hub) - Create and maintain a shared Obsidian or local Markdown memory vault for Codex, Hermes, Claude Code, OpenClaw, and other Agents.
+
+### Content & Visuals
+
+[**xiao-songshu-peitu**](#xiao-songshu-peitu) - Create fixed squirrel-IP illustration plans and prompts for Chinese articles, posts, WeChat articles, Xiaohongshu notes, and workflow docs.
+
+### Codex Workflow
+
+[**codex-skill-launchpad**](#codex-skill-launchpad) - Turn installed Codex Skills into visible entry folders and dedicated Codex chats.
+
+## Full Catalog
 
 | Skill | One-liner | Best for | Install |
 |---|---|---|---|
