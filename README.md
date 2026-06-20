@@ -13,7 +13,11 @@
 ![Hermes](https://img.shields.io/badge/Hermes-Skill-3B82F6?style=flat-square)
 ![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-8B5CF6?style=flat-square)
 
+---
+
 ## ⭐ 精选 Skill
+
+最常用、最适合别人直接查看和安装的几个 Skill。
 
 ### 🧠 AI 记忆与协作
 
@@ -27,6 +31,8 @@
 
 [**🚀 codex-skill-launchpad**](#codex-skill-launchpad) - 把已经安装的 Codex Skills 做成可见、可点击、可复用的入口文件夹和专属对话。
 
+---
+
 ## 📦 完整目录
 
 | Skill | 一句话 | 适合 | 安装链接 |
@@ -34,6 +40,8 @@
 | [🧠 shared-memory-hub](#shared-memory-hub) | 给多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库 | 长期规则、经验沉淀、多 Agent 协作 | [安装](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
 | [🐿️ xiao-songshu-peitu](#xiao-songshu-peitu) | 用固定小松鼠 IP 为中文内容生成正文配图方案和提示词 | 公众号、小红书、Notion、工作流文档配图 | [安装](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
 | [🚀 codex-skill-launchpad](#codex-skill-launchpad) | 把 Codex Skills 做成可视化入口项目和专属对话 | Codex 客户端 Skill 管理 | [安装](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
+
+---
 
 ## ⚙️ 安装方式
 
@@ -52,6 +60,8 @@
 不同 Agent 的安装目录和权限不同。安装前建议让 Agent 先读取 `SKILL.md`，确认它会做什么、不会做什么。
 
 <a id="skills"></a>
+
+---
 
 ## 🧰 Skills
 
@@ -160,6 +170,8 @@ https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu
 https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 ```
 
+---
+
 ## 🧪 平台兼容
 
 | Skill | Codex | Claude Code | Hermes | OpenClaw | 说明 |
@@ -168,7 +180,13 @@ https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 | xiao-songshu-peitu | 支持 | 支持 | 视工具而定 | 视工具而定 | 需要图片生成能力或可交付提示词 |
 | codex-skill-launchpad | 支持 | 不推荐 | 不推荐 | 不推荐 | 依赖 Codex 客户端项目和专属对话 |
 
+---
+
 ## 📌 关于
+
+松果 Skills 是我把自己反复使用的 AI 工作流整理成可安装、可审阅、可分享的 Skill 合集。
+
+它优先服务真实使用，不追求数量堆砌；每个 Skill 都应该说清楚适合什么、不适合什么、怎么触发。
 
 这个仓库会逐步收集我自己常用、可复用、适合公开分享的 AI Skills。
 

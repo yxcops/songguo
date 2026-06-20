@@ -13,7 +13,11 @@ This repository collects AI Skills that I use, refine, and gradually publish. Ea
 ![Hermes](https://img.shields.io/badge/Hermes-Skill-3B82F6?style=flat-square)
 ![OpenClaw](https://img.shields.io/badge/OpenClaw-Skill-8B5CF6?style=flat-square)
 
+---
+
 ## ⭐ Featured Skills
+
+The Skills I use most and consider easiest for others to inspect and install.
 
 ### 🧠 AI Memory & Collaboration
 
@@ -27,6 +31,8 @@ This repository collects AI Skills that I use, refine, and gradually publish. Ea
 
 [**🚀 codex-skill-launchpad**](#codex-skill-launchpad) - Turn installed Codex Skills into visible entry folders and dedicated Codex chats.
 
+---
+
 ## 📦 Full Catalog
 
 | Skill | One-liner | Best for | Install |
@@ -34,6 +40,8 @@ This repository collects AI Skills that I use, refine, and gradually publish. Ea
 | [🧠 shared-memory-hub](#shared-memory-hub) | Build a shared Obsidian or Markdown memory vault for multiple AI Agents | Long-term rules, reusable experience, multi-Agent collaboration | [Install](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
 | [🐿️ xiao-songshu-peitu](#xiao-songshu-peitu) | Create fixed squirrel-IP illustration plans and prompts for Chinese content | WeChat articles, Xiaohongshu, Notion docs, workflow explainers | [Install](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
 | [🚀 codex-skill-launchpad](#codex-skill-launchpad) | Turn Codex Skills into visible entry folders and dedicated Codex chats | Codex desktop Skill management | [Install](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
+
+---
 
 ## ⚙️ Installation
 
@@ -52,6 +60,8 @@ Install this skill: https://github.com/yxcops/songguo-skills/tree/main/xiao-song
 Different Agents use different installation paths and permissions. Before installing, ask the Agent to read `SKILL.md` and summarize what the Skill does and does not do.
 
 <a id="skills"></a>
+
+---
 
 ## 🧰 Skills
 
@@ -160,6 +170,8 @@ Install link:
 https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 ```
 
+---
+
 ## 🧪 Compatibility
 
 | Skill | Codex | Claude Code | Hermes | OpenClaw | Notes |
@@ -168,7 +180,13 @@ https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 | xiao-songshu-peitu | Supported | Supported | Tool-dependent | Tool-dependent | Needs image-generation ability, or can deliver prompts only |
 | codex-skill-launchpad | Supported | Not recommended | Not recommended | Not recommended | Depends on Codex desktop projects and dedicated chats |
 
+---
+
 ## 📌 About
+
+Songguo Skills is a collection of AI workflows I repeatedly use, organized into installable, reviewable, and shareable Skills.
+
+It prioritizes real usage over catalog size. Each Skill should clearly explain what it is for, what it is not for, and how to trigger it.
 
 This repository will gradually collect AI Skills that are useful, reusable, and suitable for public sharing.
 
