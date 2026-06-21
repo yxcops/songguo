@@ -21,30 +21,38 @@ The Skills I use most and consider easiest for others to inspect and install.
 
 ### 🧠 AI Memory & Collaboration
 
-[**shared-memory-hub**](#shared-memory-hub) - Create and maintain a shared Obsidian or local Markdown memory vault for Codex, Hermes, Claude Code, OpenClaw, and other Agents.
+**Shared Memory Hub**
+
+[shared-memory-hub](#shared-memory-hub) - Create and maintain a shared Obsidian or local Markdown memory vault for Codex, Hermes, Claude Code, OpenClaw, and other Agents.
 
 ### 📚 Reading & Learning
 
-[**daily-reading**](#daily-reading) - Enter reading mode, keep useful reading notes, maintain a reading profile, and generate a personalized weekly book list.
+**Daily Reading**
+
+[daily-reading](#daily-reading) - Enter reading mode, keep useful reading notes, maintain a reading profile, and generate a personalized weekly book list.
 
 ### 🎨 Content & Visuals
 
-[**xiao-songshu-peitu**](#xiao-songshu-peitu) - Create fixed squirrel-IP illustration plans and prompts for Chinese articles, posts, WeChat articles, Xiaohongshu notes, and workflow docs.
+**Squirrel Illustration**
+
+[xiao-songshu-peitu](#xiao-songshu-peitu) - Create fixed squirrel-IP illustration plans and prompts for Chinese articles, posts, WeChat articles, Xiaohongshu notes, and workflow docs.
 
 ### 🚀 Codex Workflow
 
-[**codex-skill-launchpad**](#codex-skill-launchpad) - Turn installed Codex Skills into visible entry folders and dedicated Codex chats.
+**Codex Skill Launchpad**
+
+[codex-skill-launchpad](#codex-skill-launchpad) - Turn installed Codex Skills into visible entry folders and dedicated Codex chats.
 
 ---
 
 ## 📦 Full Catalog
 
-| Skill | One-liner | Best for | Install |
-|---|---|---|---|
-| [shared-memory-hub](#shared-memory-hub) | Build a shared Obsidian or Markdown memory vault for multiple AI Agents | Long-term rules, reusable experience, multi-Agent collaboration | [Install](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
-| [daily-reading](#daily-reading) | Enter reading mode, keep notes, and generate a weekly book list | Reading notes, reading profile, personalized book recommendations | [Install](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
-| [xiao-songshu-peitu](#xiao-songshu-peitu) | Create fixed squirrel-IP illustration plans and prompts for Chinese content | WeChat articles, Xiaohongshu, Notion docs, workflow explainers | [Install](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
-| [codex-skill-launchpad](#codex-skill-launchpad) | Turn Codex Skills into visible entry folders and dedicated Codex chats | Codex desktop Skill management | [Install](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
+| Name | Skill | Category | One-liner | Install |
+|---|---|---|---|---|
+| Shared Memory Hub | [shared-memory-hub](#shared-memory-hub) | Memory & Collaboration | Build a shared Obsidian or Markdown memory vault for multiple AI Agents | [Install](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
+| Daily Reading | [daily-reading](#daily-reading) | Reading & Learning | Enter reading mode, keep notes, and generate a weekly book list | [Install](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
+| Squirrel Illustration | [xiao-songshu-peitu](#xiao-songshu-peitu) | Content & Visuals | Create fixed squirrel-IP illustration plans and prompts for Chinese content | [Install](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
+| Codex Skill Launchpad | [codex-skill-launchpad](#codex-skill-launchpad) | Codex Workflow | Turn Codex Skills into visible entry folders and dedicated Codex chats | [Install](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
 
 ---
 
@@ -72,7 +80,7 @@ Different Agents use different installation paths and permissions. Before instal
 
 <a id="shared-memory-hub"></a>
 
-### shared-memory-hub
+### Shared Memory Hub (shared-memory-hub)
 
 Builds a shared Obsidian or local Markdown memory vault for Codex, Hermes, Claude Code, OpenClaw, and other Agents.
 
@@ -108,7 +116,7 @@ https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 
 <a id="daily-reading"></a>
 
-### daily-reading
+### Daily Reading (daily-reading)
 
 Turns reading into a sustainable workflow: enter reading mode, discuss what you are reading, keep useful notes, maintain a reading profile, and generate a weekly list of 5 personalized books.
 
@@ -148,7 +156,7 @@ https://github.com/yxcops/songguo-skills/tree/main/daily-reading
 
 <a id="xiao-songshu-peitu"></a>
 
-### xiao-songshu-peitu
+### Squirrel Illustration (xiao-songshu-peitu)
 
 Creates article illustration plans and prompts for Chinese articles, posts, Xiaohongshu notes, WeChat articles, Notion docs, and workflow explainers using a fixed squirrel character IP.
 
@@ -185,7 +193,7 @@ https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu
 
 <a id="codex-skill-launchpad"></a>
 
-### codex-skill-launchpad
+### Codex Skill Launchpad (codex-skill-launchpad)
 
 Organizes globally installed Codex Skills into a visible Codex desktop entry project: one entry folder per Skill, and one dedicated chat per entry.
 
