@@ -21,19 +21,19 @@
 
 ### 🧠 AI 记忆与协作
 
-[**🧠 shared-memory-hub**](#shared-memory-hub) - 给 Codex、Hermes、Claude Code、OpenClaw 等多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库。
+[**shared-memory-hub**](#shared-memory-hub) - 给 Codex、Hermes、Claude Code、OpenClaw 等多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库。
 
 ### 📚 阅读与学习
 
-[**📚 daily-reading**](#daily-reading) - 进入读书模式，沉淀读书笔记、维护阅读画像，并按周生成个性化推荐书单。
+[**daily-reading**](#daily-reading) - 进入读书模式，沉淀读书笔记、维护阅读画像，并按周生成个性化推荐书单。
 
 ### 🎨 中文内容与配图
 
-[**🐿️ xiao-songshu-peitu**](#xiao-songshu-peitu) - 用固定小松鼠 IP 为中文文章、帖子、小红书、公众号和工作流文档生成配图方案和提示词。
+[**xiao-songshu-peitu**](#xiao-songshu-peitu) - 用固定小松鼠 IP 为中文文章、帖子、小红书、公众号和工作流文档生成配图方案和提示词。
 
 ### 🚀 Codex 工作流
 
-[**🚀 codex-skill-launchpad**](#codex-skill-launchpad) - 把已经安装的 Codex Skills 做成可见、可点击、可复用的入口文件夹和专属对话。
+[**codex-skill-launchpad**](#codex-skill-launchpad) - 把已经安装的 Codex Skills 做成可见、可点击、可复用的入口文件夹和专属对话。
 
 ---
 
@@ -41,10 +41,10 @@
 
 | Skill | 一句话 | 适合 | 安装链接 |
 |---|---|---|---|
-| [🧠 shared-memory-hub](#shared-memory-hub) | 给多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库 | 长期规则、经验沉淀、多 Agent 协作 | [安装](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
-| [📚 daily-reading](#daily-reading) | 进入读书模式，沉淀读书笔记并生成每周推荐书单 | 读书记录、阅读画像、个性化书单 | [安装](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
-| [🐿️ xiao-songshu-peitu](#xiao-songshu-peitu) | 用固定小松鼠 IP 为中文内容生成正文配图方案和提示词 | 公众号、小红书、Notion、工作流文档配图 | [安装](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
-| [🚀 codex-skill-launchpad](#codex-skill-launchpad) | 把 Codex Skills 做成可视化入口项目和专属对话 | Codex 客户端 Skill 管理 | [安装](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
+| [shared-memory-hub](#shared-memory-hub) | 给多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库 | 长期规则、经验沉淀、多 Agent 协作 | [安装](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
+| [daily-reading](#daily-reading) | 进入读书模式，沉淀读书笔记并生成每周推荐书单 | 读书记录、阅读画像、个性化书单 | [安装](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
+| [xiao-songshu-peitu](#xiao-songshu-peitu) | 用固定小松鼠 IP 为中文内容生成正文配图方案和提示词 | 公众号、小红书、Notion、工作流文档配图 | [安装](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
+| [codex-skill-launchpad](#codex-skill-launchpad) | 把 Codex Skills 做成可视化入口项目和专属对话 | Codex 客户端 Skill 管理 | [安装](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
 
 ---
 
@@ -72,7 +72,7 @@
 
 <a id="shared-memory-hub"></a>
 
-### 🧠 shared-memory-hub（共享记忆库）
+### shared-memory-hub（共享记忆库）
 
 让 Codex、Hermes、Claude Code、OpenClaw 等智能体共用一套 Obsidian 或本地 Markdown 共享记忆库。
 
@@ -108,7 +108,7 @@ https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 
 <a id="daily-reading"></a>
 
-### 📚 daily-reading（每日读书）
+### daily-reading（每日读书）
 
 把读书过程整理成一个可持续的系统：进入读书模式、讨论书中内容、沉淀读书笔记、维护阅读画像，并按周生成 5 本个性化推荐书单。
 
@@ -148,7 +148,7 @@ https://github.com/yxcops/songguo-skills/tree/main/daily-reading
 
 <a id="xiao-songshu-peitu"></a>
 
-### 🐿️ xiao-songshu-peitu（小松鼠配图）
+### xiao-songshu-peitu（小松鼠配图）
 
 为中文文章、帖子、小红书、公众号、Notion 文档和工作流说明生成带固定小松鼠 IP 的正文配图方案和提示词。
 
@@ -185,7 +185,7 @@ https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu
 
 <a id="codex-skill-launchpad"></a>
 
-### 🚀 codex-skill-launchpad（Codex Skill 启动台）
+### codex-skill-launchpad（Codex Skill 启动台）
 
 把一组全局安装的 Codex Skills 整理成 Codex 客户端里的可视化入口项目：每个 Skill 一个入口文件夹，每个入口一个专属对话。
 
