@@ -1,0 +1,4 @@
+interface:
+  display_name: "每日读书"
+  short_description: "进入读书模式，沉淀读书笔记并生成每周推荐书单。"
+  default_prompt: "请使用 $daily-reading，进入读书模式。如果还不知道书名，先继续记录和讨论，结束前再提醒我补充。"

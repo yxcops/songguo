@@ -5,7 +5,7 @@
 这里收集我自用并逐步公开的 AI Skills。每个 Skill 都是一个可以被 Agent 读取的结构化工作流，用来把重复任务做得更稳、更省心。
 
 [![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-3-10B981?style=for-the-badge)](#skills)
+[![Skills](https://img.shields.io/badge/Skills-4-10B981?style=for-the-badge)](#skills)
 [![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
 
 ![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
@@ -23,6 +23,10 @@
 
 [**🧠 shared-memory-hub**](#shared-memory-hub) - 给 Codex、Hermes、Claude Code、OpenClaw 等多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库。
 
+### 📚 阅读与学习
+
+[**📚 daily-reading**](#daily-reading) - 进入读书模式，沉淀读书笔记、维护阅读画像，并按周生成个性化推荐书单。
+
 ### 🎨 中文内容与配图
 
 [**🐿️ xiao-songshu-peitu**](#xiao-songshu-peitu) - 用固定小松鼠 IP 为中文文章、帖子、小红书、公众号和工作流文档生成配图方案和提示词。
@@ -38,6 +42,7 @@
 | Skill | 一句话 | 适合 | 安装链接 |
 |---|---|---|---|
 | [🧠 shared-memory-hub](#shared-memory-hub) | 给多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库 | 长期规则、经验沉淀、多 Agent 协作 | [安装](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
+| [📚 daily-reading](#daily-reading) | 进入读书模式，沉淀读书笔记并生成每周推荐书单 | 读书记录、阅读画像、个性化书单 | [安装](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
 | [🐿️ xiao-songshu-peitu](#xiao-songshu-peitu) | 用固定小松鼠 IP 为中文内容生成正文配图方案和提示词 | 公众号、小红书、Notion、工作流文档配图 | [安装](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
 | [🚀 codex-skill-launchpad](#codex-skill-launchpad) | 把 Codex Skills 做成可视化入口项目和专属对话 | Codex 客户端 Skill 管理 | [安装](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
 
@@ -99,6 +104,43 @@
 
 ```text
 https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
+```
+
+<a id="daily-reading"></a>
+
+### 📚 daily-reading（每日读书）
+
+把读书过程整理成一个可持续的系统：进入读书模式、讨论书中内容、沉淀读书笔记、维护阅读画像，并按周生成 5 本个性化推荐书单。
+
+它是通用 Skill，不绑定某一个平台。Codex、Hermes、Claude Code、OpenClaw 都可以使用核心规则；自动定时、渠道推送、读取日记或历史记录，需要对应平台额外配置。
+
+**适合**
+
+- 读书时想让 AI 陪你讨论，并把有价值的内容沉淀下来。
+- 想在 Obsidian 或本地 Markdown 里维护长期读书笔记。
+- 想每周基于近期目标、阅读画像和已读内容推荐 5 本书。
+- 想把同一套读书规则分享给不同 AI Agent 使用。
+
+**不适合**
+
+- 希望安装后自动接管所有平台定时任务。定时任务需要平台单独配置。
+- 希望默认读取日记、历史对话或私人目录。读取这些内容必须经过用户授权。
+- 只想做一次普通书籍摘要。
+
+**怎么触发**
+
+```text
+请使用 daily-reading Skill，开始读书。
+```
+
+```text
+请使用 daily-reading，帮我生成本周推荐书单。
+```
+
+安装链接：
+
+```text
+https://github.com/yxcops/songguo-skills/tree/main/daily-reading
 ```
 
 <a id="xiao-songshu-peitu"></a>
@@ -177,6 +219,7 @@ https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 | Skill | Codex | Claude Code | Hermes | OpenClaw | 说明 |
 |---|---|---|---|---|---|
 | shared-memory-hub | 支持 | 支持 | 支持 | 支持 | 需要能读写本地 Markdown 文件 |
+| daily-reading | 支持 | 支持 | 支持 | 支持 | 核心规则通用；自动定时和渠道推送取决于平台 |
 | xiao-songshu-peitu | 支持 | 支持 | 视工具而定 | 视工具而定 | 需要图片生成能力或可交付提示词 |
 | codex-skill-launchpad | 支持 | 不推荐 | 不推荐 | 不推荐 | 依赖 Codex 客户端项目和专属对话 |
 
