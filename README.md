@@ -29,7 +29,7 @@
 
 **每日读书**
 
-[daily-reading](#daily-reading) - 进入读书模式，沉淀读书笔记、维护阅读画像，并按周生成个性化推荐书单。
+[daily-reading](#daily-reading) - 进入读书模式，基于授权平台记忆和项目资料维护阅读画像，并按周生成个性化推荐书单。
 
 ### 🎨 内容与配图
 
@@ -50,7 +50,7 @@
 | 中文名 | Skill | 分类 | 一句话 | 安装链接 |
 |---|---|---|---|---|
 | 共享记忆库 | [shared-memory-hub](#shared-memory-hub) | 记忆与协作 | 给多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库 | [安装](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
-| 每日读书 | [daily-reading](#daily-reading) | 阅读与学习 | 进入读书模式，沉淀读书笔记并生成每周推荐书单 | [安装](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
+| 每日读书 | [daily-reading](#daily-reading) | 阅读与学习 | 进入读书模式，基于授权记忆维护阅读画像并生成每周推荐书单 | [安装](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
 | 小松鼠配图 | [xiao-songshu-peitu](#xiao-songshu-peitu) | 内容与配图 | 用固定小松鼠 IP 为中文内容生成正文配图方案和提示词 | [安装](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
 | Codex Skill 启动台 | [codex-skill-launchpad](#codex-skill-launchpad) | Codex 工作流 | 把 Codex Skills 做成可视化入口项目和专属对话 | [安装](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
 
@@ -118,11 +118,11 @@ https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 
 ### 每日读书（daily-reading）
 
-把读书过程整理成一个可持续的系统：进入读书模式、讨论书中内容、沉淀读书笔记、维护阅读画像，并按周生成 5 本个性化推荐书单。
+把读书过程整理成一个可持续的系统：进入读书模式、讨论书中内容、沉淀读书笔记、基于授权平台记忆和项目资料维护阅读画像，并按周生成 5 本个性化推荐书单。
 
-它是通用 Skill，不绑定某一个平台。Codex、Hermes、Claude Code、OpenClaw 都可以使用核心规则；自动定时、渠道推送、读取日记或历史记录，需要对应平台额外配置。
+它是通用 Skill，不绑定某一个平台。Codex、Hermes、Claude Code、OpenClaw 都可以使用核心规则；自动定时、渠道推送、读取日记、历史记录或共享记忆，需要对应平台额外配置和用户授权。
 
-首次使用时，它会先引导用户确认每日读书目录；确认后再创建或复用 `读书笔记`、`每周推荐书单`、`阅读画像.md` 和 `设置.md`。
+首次使用时，它会先引导用户确认每日读书目录；确认后再创建或复用 `读书笔记`、`每周推荐书单`、`阅读画像.md` 和 `设置.md`。如果用户授权，它还会读取当前平台的项目说明、共享记忆摘要或历史摘要，先生成阅读画像，再用于后续书单推荐。
 
 **适合**
 
@@ -130,6 +130,7 @@ https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 - 想在 Obsidian 或本地 Markdown 里维护长期读书笔记。
 - 已经有读书笔记目录，想在不移动原文件的前提下接入。
 - 想每周基于近期目标、阅读画像和已读内容推荐 5 本书。
+- 想让推荐书单参考自己当前项目、长期记忆或过往会话摘要。
 - 想把同一套读书规则分享给不同 AI Agent 使用。
 
 **不适合**
@@ -146,6 +147,10 @@ https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 
 ```text
 请使用 daily-reading，帮我生成本周推荐书单。
+```
+
+```text
+请使用 daily-reading，基于我授权的项目资料初始化阅读画像。
 ```
 
 安装链接：

@@ -1,11 +1,11 @@
 ---
 name: daily-reading
-description: 用于初始化每日读书目录、进入读书模式、沉淀读书笔记、维护阅读画像，并按周生成个性化推荐书单的通用 Skill。适用于用户说“开始读书”“读书模式”“初始化每日读书”“设置读书目录”“生成每周推荐书单”等场景，兼容 Codex、Hermes、Claude Code、OpenClaw 或其他能读写本地 Markdown 文件的 AI Agent。
+description: 用于初始化每日读书目录、进入读书模式、沉淀读书笔记、基于授权平台记忆或项目资料初始化阅读画像，并按周生成个性化推荐书单的通用 Skill。适用于用户说“开始读书”“读书模式”“初始化每日读书”“初始化阅读画像”“根据我的记忆推荐书”“生成每周推荐书单”等场景，兼容 Codex、Hermes、Claude Code、OpenClaw 或其他能读写本地 Markdown 文件的 AI Agent。
 ---
 
 # 每日读书
 
-这个 Skill 帮用户把读书过程变成可持续的记录系统：开始读书、讨论内容、记录笔记、更新阅读画像、每周推荐下一批适合读的书。
+这个 Skill 帮用户把读书过程变成可持续的记录系统：开始读书、讨论内容、记录笔记、基于授权记忆初始化阅读画像、每周推荐下一批适合读的书。
 
 它默认不绑定任何单一平台。自动定时、渠道推送、读取日记、历史对话或共享记忆，都属于平台增强能力，接入前先读 `references/platform-setup.md`。
 
@@ -24,6 +24,13 @@ description: 用于初始化每日读书目录、进入读书模式、沉淀读�
 - `设置读书目录`
 - `把每日读书放到这个目录`
 - `我已经有读书笔记目录`
+
+用户说出以下意思时，进入阅读画像初始化流程：
+
+- `初始化阅读画像`
+- `根据我的记忆推荐书`
+- `看看我的项目，判断我该读什么`
+- `基于过往会话生成读书画像`
 
 用户说出以下意思时，退出读书模式：
 
@@ -62,6 +69,30 @@ python3 scripts/reading_tool.py --notes-dir /path/to/读书笔记 plan
 ```
 
 如果用户给的目录里已经有 `读书笔记` 加 `每周推荐书单` 或 `每周推荐清单`，判断它已经是每日读书根目录，直接复用，不要再新建第二层 `每日读书` 或 `读书笔记`。
+
+## 阅读画像初始化
+
+目录确认后，询问用户是否要基于当前平台记忆和项目资料初始化阅读画像。不要默认读取日记、聊天历史、私人目录、微信读书、NAS 或整个平台历史。
+
+用户确认后，先读 `references/platform-setup.md`，按当前平台能访问的范围处理：
+
+1. Codex：优先读取当前项目的 `AGENTS.md`、`README.md`、`Docs/*.md`，以及用户明确指定的本地记忆摘要文件。
+2. Hermes：优先读取用户明确授权的共享记忆摘要、Hermes 长期记忆摘要或项目摘要；不要默认读取 `.env`、日志和原始聊天。
+3. Claude Code：优先使用用户提供的历史摘要或明确文件；不要把 `history.jsonl` 当成完整会话，也不要默认搬运原始 session。
+4. 其他平台：只使用用户明确提供的文件或平台已授权暴露的摘要。
+
+如果平台允许运行脚本，用 `profile-context` 生成资料包：
+
+```bash
+python3 scripts/reading_tool.py --root /path/to/每日读书 profile-context \
+  --project-dir /path/to/已授权项目 \
+  --source /path/to/已授权记忆摘要.md \
+  --save
+```
+
+然后读取生成的 `阅读画像初始化资料包.md`，把稳定结论写入 `阅读画像.md`。阅读画像要包含：用户现在在做什么、近期关注的问题、反复出现的困难、正在补的能力、更适合的书籍类型、暂不适合继续堆的书、下一阶段推荐策略、优先推荐方向、暂不推荐方向、已读取来源、未读取来源和可信度。
+
+写入时只保留用于选书的判断，不要保存原始聊天、账号、密钥、Cookie、代理配置或敏感路径。完成后在 `设置.md` 里记录“阅读画像初始化：已完成”和已授权来源。
 
 ## 读书模式
 
@@ -158,6 +189,7 @@ python3 scripts/reading_tool.py check
 python3 scripts/reading_tool.py --root /path/to/每日读书 check
 python3 scripts/reading_tool.py --root /path/to/每日读书 start --book "书名"
 python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind summary --text "今天的讨论结论"
+python3 scripts/reading_tool.py --root /path/to/每日读书 profile-context --source /path/to/已授权记忆摘要.md --save
 python3 scripts/reading_tool.py --root /path/to/每日读书 context --days 45
 python3 scripts/reading_tool.py --root /path/to/每日读书 recommendation
 ```

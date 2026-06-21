@@ -29,7 +29,7 @@ The Skills I use most and consider easiest for others to inspect and install.
 
 **Daily Reading**
 
-[daily-reading](#daily-reading) - Enter reading mode, keep useful reading notes, maintain a reading profile, and generate a personalized weekly book list.
+[daily-reading](#daily-reading) - Enter reading mode, maintain a reading profile from authorized memory and project materials, and generate a personalized weekly book list.
 
 ### 🎨 Content & Visuals
 
@@ -50,7 +50,7 @@ The Skills I use most and consider easiest for others to inspect and install.
 | Name | Skill | Category | One-liner | Install |
 |---|---|---|---|---|
 | Shared Memory Hub | [shared-memory-hub](#shared-memory-hub) | Memory & Collaboration | Build a shared Obsidian or Markdown memory vault for multiple AI Agents | [Install](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
-| Daily Reading | [daily-reading](#daily-reading) | Reading & Learning | Enter reading mode, keep notes, and generate a weekly book list | [Install](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
+| Daily Reading | [daily-reading](#daily-reading) | Reading & Learning | Enter reading mode, maintain a memory-aware profile, and generate a weekly book list | [Install](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
 | Squirrel Illustration | [xiao-songshu-peitu](#xiao-songshu-peitu) | Content & Visuals | Create fixed squirrel-IP illustration plans and prompts for Chinese content | [Install](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
 | Codex Skill Launchpad | [codex-skill-launchpad](#codex-skill-launchpad) | Codex Workflow | Turn Codex Skills into visible entry folders and dedicated Codex chats | [Install](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
 
@@ -120,9 +120,9 @@ https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 
 Turns reading into a sustainable workflow: enter reading mode, discuss what you are reading, keep useful notes, maintain a reading profile, and generate a weekly list of 5 personalized books.
 
-It is a general-purpose Skill, not a platform-specific automation. Codex, Hermes, Claude Code, and OpenClaw can all use the core workflow. Scheduling, channel delivery, diary access, and history access depend on each platform's capabilities and permissions.
+It is a general-purpose Skill, not a platform-specific automation. Codex, Hermes, Claude Code, and OpenClaw can all use the core workflow. Scheduling, channel delivery, diary access, history access, and shared-memory access depend on each platform's capabilities and explicit user permission.
 
-On first use, it guides the user to confirm a local reading directory before creating or reusing `读书笔记`, `每周推荐书单`, `阅读画像.md`, and `设置.md`.
+On first use, it guides the user to confirm a local reading directory before creating or reusing `读书笔记`, `每周推荐书单`, `阅读画像.md`, and `设置.md`. With permission, it can also read project docs, shared-memory summaries, or history summaries to initialize a reading profile before weekly recommendations.
 
 **Best for**
 
@@ -130,6 +130,7 @@ On first use, it guides the user to confirm a local reading directory before cre
 - Keeping long-term reading notes in Obsidian or local Markdown.
 - Connecting an existing reading-notes folder without moving existing files.
 - Generating 5 weekly book recommendations from recent goals, reading notes, and a reading profile.
+- Letting recommendations reflect current projects, long-term memory, or summarized past conversations.
 - Sharing one reading workflow across multiple AI Agents.
 
 **Not for**
@@ -146,6 +147,10 @@ Use the daily-reading Skill. Start reading mode.
 
 ```text
 Use daily-reading to generate this week's recommended book list.
+```
+
+```text
+Use daily-reading to initialize my reading profile from the project materials I authorize.
 ```
 
 Install link:

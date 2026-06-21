@@ -22,6 +22,20 @@ DEFAULT_PROJECT_DIR = "每日读书"
 NOTES_DIR_NAME = "读书笔记"
 WEEKLY_DIR_NAMES = ("每周推荐书单", "每周推荐清单")
 STATE_FILE_NAME = ".daily-reading-state.json"
+PROFILE_CONTEXT_FILE_NAME = "阅读画像初始化资料包.md"
+PROJECT_DOC_FILE_NAMES = (
+    "AGENTS.md",
+    "CLAUDE.md",
+    "README.md",
+    "README.zh-CN.md",
+    "项目说明.md",
+    "会话迁移摘要.md",
+    "问题清单.md",
+    "诊断记录.md",
+    "处理记录.md",
+    "验证记录.md",
+)
+PROJECT_DOC_DIR_NAMES = ("Docs", "docs")
 
 
 def now_iso() -> str:
@@ -260,6 +274,58 @@ def render_file_excerpt(path: Path, *, title: str, max_chars: int) -> str:
     )
 
 
+def is_hidden_path(path: Path) -> bool:
+    return any(part.startswith(".") for part in path.parts if part not in (".", ".."))
+
+
+def unique_paths(paths: list[Path]) -> list[Path]:
+    result = []
+    seen = set()
+    for path in paths:
+        resolved = path.expanduser()
+        try:
+            stat = resolved.stat()
+            key = (stat.st_dev, stat.st_ino)
+        except OSError:
+            key = str(resolved)
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(resolved)
+    return result
+
+
+def project_context_files(project_dir: Path, *, max_files: int) -> tuple[list[Path], list[str]]:
+    project_dir = project_dir.expanduser()
+    warnings = []
+    if not project_dir.exists():
+        return [], [f"{project_dir} 不存在，已跳过。"]
+    if not project_dir.is_dir():
+        return [], [f"{project_dir} 不是目录，已跳过。"]
+
+    candidates = []
+    for name in PROJECT_DOC_FILE_NAMES:
+        path = project_dir / name
+        if path.is_file():
+            candidates.append(path)
+
+    for dir_name in PROJECT_DOC_DIR_NAMES:
+        docs_dir = project_dir / dir_name
+        if not docs_dir.is_dir():
+            continue
+        for item in sorted(docs_dir.rglob("*.md")):
+            if item.is_file() and not is_hidden_path(item.relative_to(project_dir)):
+                candidates.append(item)
+
+    files = unique_paths(candidates)
+    if len(files) > max_files:
+        warnings.append(f"{project_dir} 匹配到 {len(files)} 个项目文档，只读取前 {max_files} 个。")
+        files = files[:max_files]
+    if not files:
+        warnings.append(f"{project_dir} 未找到常见项目说明文件或 Docs/*.md。")
+    return files, warnings
+
+
 def load_state(path: Path) -> dict:
     if not path.exists():
         return {}
@@ -292,6 +358,7 @@ status: active
 
 ## 状态
 
+- 阅读画像初始化：未完成
 - 每周自动推荐：未配置
 - 渠道提醒：未配置
 - 发送渠道：
@@ -310,6 +377,10 @@ status: active
 
 <!-- 只记录用户明确授权的文件路径或摘要来源，不要默认写入私人目录。 -->
 
+## 项目资料来源
+
+<!-- 只记录用户明确授权的项目目录或项目摘要文件。 -->
+
 ## 说明
 
 这个文件记录每日读书 Skill 的本地目录设置。自动定时、渠道发送、读取日记或历史记录，需要在所在平台单独配置并经过用户确认。
@@ -325,7 +396,21 @@ status: active
 
 # 阅读画像
 
+## 来源与边界
+
+- 初始化状态：未初始化
+- 最近更新时间：
+- 已读取来源：
+- 未读取或未授权来源：
+- 可信度：
+
+## 用户现在在做什么
+
+
 ## 近期关注的问题
+
+
+## 反复出现的困难
 
 
 ## 正在补的能力
@@ -337,7 +422,13 @@ status: active
 ## 暂时不适合继续堆的书
 
 
-## 下一阶段阅读建议
+## 下一阶段推荐策略
+
+
+## 优先推荐方向
+
+
+## 暂不推荐方向
 
 
 ## 本周变化
@@ -477,6 +568,7 @@ def cmd_check(args: argparse.Namespace) -> int:
         print(describe_layout(layout))
     print(f"状态文件：{spath}")
     print("核心功能：读书模式、读书笔记、阅读画像、每周推荐书单")
+    print("阅读画像初始化：可用 profile-context 命令基于授权记忆和项目文档生成资料包")
     print("推荐上下文包：可用 context 命令基于阅读画像、近期笔记、历史书单和授权记忆生成")
     print("自动定时和渠道推送：需要由所在平台单独配置")
     return 0
@@ -853,6 +945,132 @@ def cmd_context(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_profile_context(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    ensure_layout(layout)
+    profile_path = layout["profile_path"]
+    settings_path = layout["settings_path"]
+
+    lines = [
+        "# 阅读画像初始化资料包",
+        "",
+        f"- 生成时间：{now_iso()}",
+        f"- 根目录：{layout['root']}",
+        f"- 阅读画像：{profile_path}",
+        "",
+        "## 使用方式",
+        "",
+        "把下面资料归纳进 `阅读画像.md`，用于以后每周推荐书单。",
+        "只保留稳定偏好、当前项目方向、反复出现的问题和需要补的能力。",
+        "不要把原始聊天、私密配置、账号、Token、Cookie、代理细节写入阅读画像。",
+        "",
+        "## 读取范围",
+        "",
+        "- 默认读取：设置文件、现有阅读画像。",
+        "- 授权记忆：只读取通过 `--source` 明确传入的文件。",
+        "- 授权项目：只读取通过 `--project-dir` 指定目录下的常见说明文件和 Docs/*.md。",
+        "- 未授权内容：不会自动读取日记、聊天历史、私人目录、微信读书、NAS 或整个平台历史。",
+        "",
+    ]
+
+    if settings_path.exists():
+        lines.extend(
+            [
+                "## 设置摘要",
+                "",
+                render_file_excerpt(settings_path, title=settings_path.name, max_chars=args.max_chars),
+                "",
+            ]
+        )
+
+    if profile_path.exists():
+        lines.extend(
+            [
+                "## 现有阅读画像",
+                "",
+                render_file_excerpt(profile_path, title=profile_path.name, max_chars=args.max_chars),
+                "",
+            ]
+        )
+
+    lines.extend(["## 授权项目文件", ""])
+    if args.project_dir:
+        for value in args.project_dir:
+            project_dir = Path(value).expanduser()
+            files, warnings = project_context_files(project_dir, max_files=args.max_project_files)
+            lines.extend([f"### 项目：{project_dir}", ""])
+            for warning in warnings:
+                lines.append(f"- {warning}")
+            if warnings:
+                lines.append("")
+            for path in files:
+                lines.append(render_file_excerpt(path, title=path.name, max_chars=args.max_chars))
+                lines.append("")
+    else:
+        lines.extend(["未提供项目目录。", ""])
+
+    lines.extend(["## 授权记忆和历史摘要", ""])
+    if args.source:
+        for value in args.source:
+            path = Path(value).expanduser()
+            if path.is_dir():
+                lines.extend(
+                    [
+                        f"### {path}",
+                        "这是目录，不是明确文件。为避免越界读取，已跳过；请改传具体文件。",
+                        "",
+                    ]
+                )
+                continue
+            if not path.exists():
+                lines.extend([f"### {path}", "文件不存在，已跳过。", ""])
+                continue
+            lines.append(render_file_excerpt(path, title=path.name, max_chars=args.max_chars))
+            lines.append("")
+    else:
+        lines.extend(["未提供授权记忆或历史摘要文件。", ""])
+
+    lines.extend(
+        [
+            "## 写入阅读画像时必须形成的结论",
+            "",
+            "- 用户现在在做什么。",
+            "- 近期反复关注的问题。",
+            "- 正在补的能力。",
+            "- 更适合的书籍类型。",
+            "- 暂时不适合继续堆的书。",
+            "- 下一阶段推荐策略。",
+            "- 优先推荐方向。",
+            "- 暂不推荐方向。",
+            "- 已读取来源、未读取来源和可信度。",
+            "",
+            "## 后续每周推荐规则",
+            "",
+            "- 每周推荐优先读取更新后的 `阅读画像.md`，而不是反复读取原始历史。",
+            "- 只有用户再次明确授权时，才补读新的项目资料或平台记忆。",
+            "- 推荐书单里要写清楚依据来自阅读画像、读书笔记、历史书单还是额外授权记忆。",
+        ]
+    )
+
+    output = "\n".join(lines).rstrip() + "\n"
+    if args.output and args.save:
+        raise SystemExit("请在 --output 和 --save 中选择一个，不要同时使用。")
+    if args.output:
+        out_path = Path(args.output).expanduser()
+    elif args.save:
+        out_path = layout["root"] / PROFILE_CONTEXT_FILE_NAME
+    else:
+        out_path = None
+
+    if out_path:
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(output, encoding="utf-8")
+        print(f"已写入阅读画像初始化资料包：{out_path}")
+    else:
+        print(output, end="")
+    return 0
+
+
 def add_location_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--root", help="每日读书根目录；如果已有读书笔记和每周推荐目录，会直接复用")
     parser.add_argument("--parent", help="上级目录；会在下面创建或复用“每日读书”目录")
@@ -914,6 +1132,26 @@ def build_parser() -> argparse.ArgumentParser:
     )
     context.add_argument("--output", help="把上下文包写入指定文件；不传则输出到终端")
 
+    profile_context = subparsers.add_parser("profile-context", help="生成阅读画像初始化资料包")
+    profile_context.add_argument(
+        "--project-dir",
+        action="append",
+        help="用户授权读取的项目目录，可重复传入；只读取常见说明文件和 Docs/*.md",
+    )
+    profile_context.add_argument(
+        "--source",
+        action="append",
+        help="用户明确授权的记忆、历史摘要或平台资料文件，可重复传入；不要传整个私人目录",
+    )
+    profile_context.add_argument("--max-project-files", type=int, default=16, help="每个项目最多读取多少个文档")
+    profile_context.add_argument("--max-chars", type=int, default=2200, help="每个文件最多摘取多少字符")
+    profile_context.add_argument("--output", help="把资料包写入指定文件；不传则输出到终端")
+    profile_context.add_argument(
+        "--save",
+        action="store_true",
+        help=f"写入每日读书根目录下的 {PROFILE_CONTEXT_FILE_NAME}",
+    )
+
     return parser
 
 
@@ -931,6 +1169,7 @@ def main() -> int:
         "note": cmd_note,
         "recommendation": cmd_recommendation,
         "context": cmd_context,
+        "profile-context": cmd_profile_context,
     }
     return commands[args.command](args)
 
