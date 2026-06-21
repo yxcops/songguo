@@ -114,10 +114,13 @@ https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub
 
 它是通用 Skill，不绑定某一个平台。Codex、Hermes、Claude Code、OpenClaw 都可以使用核心规则；自动定时、渠道推送、读取日记或历史记录，需要对应平台额外配置。
 
+首次使用时，它会先引导用户确认每日读书目录；确认后再创建或复用 `读书笔记`、`每周推荐书单`、`阅读画像.md` 和 `设置.md`。
+
 **适合**
 
 - 读书时想让 AI 陪你讨论，并把有价值的内容沉淀下来。
 - 想在 Obsidian 或本地 Markdown 里维护长期读书笔记。
+- 已经有读书笔记目录，想在不移动原文件的前提下接入。
 - 想每周基于近期目标、阅读画像和已读内容推荐 5 本书。
 - 想把同一套读书规则分享给不同 AI Agent 使用。
 

@@ -114,10 +114,13 @@ Turns reading into a sustainable workflow: enter reading mode, discuss what you 
 
 It is a general-purpose Skill, not a platform-specific automation. Codex, Hermes, Claude Code, and OpenClaw can all use the core workflow. Scheduling, channel delivery, diary access, and history access depend on each platform's capabilities and permissions.
 
+On first use, it guides the user to confirm a local reading directory before creating or reusing `读书笔记`, `每周推荐书单`, `阅读画像.md`, and `设置.md`.
+
 **Best for**
 
 - Reading with an AI assistant while preserving useful thoughts and discussions.
 - Keeping long-term reading notes in Obsidian or local Markdown.
+- Connecting an existing reading-notes folder without moving existing files.
 - Generating 5 weekly book recommendations from recent goals, reading notes, and a reading profile.
 - Sharing one reading workflow across multiple AI Agents.
 

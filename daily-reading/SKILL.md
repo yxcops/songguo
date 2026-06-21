@@ -1,6 +1,6 @@
 ---
 name: daily-reading
-description: 用于进入读书模式、沉淀读书笔记、维护阅读画像，并按周生成个性化推荐书单的通用 Skill。适用于 Codex、Hermes、Claude Code、OpenClaw 或其他能读写本地 Markdown 文件的 AI Agent。
+description: 用于初始化每日读书目录、进入读书模式、沉淀读书笔记、维护阅读画像，并按周生成个性化推荐书单的通用 Skill。适用于用户说“开始读书”“读书模式”“初始化每日读书”“设置读书目录”“生成每周推荐书单”等场景，兼容 Codex、Hermes、Claude Code、OpenClaw 或其他能读写本地 Markdown 文件的 AI Agent。
 ---
 
 # 每日读书
@@ -18,6 +18,13 @@ description: 用于进入读书模式、沉淀读书笔记、维护阅读画像�
 - `我要读书`
 - `进入读书模式`
 
+用户说出以下意思时，进入首次设置或目录设置流程：
+
+- `初始化每日读书`
+- `设置读书目录`
+- `把每日读书放到这个目录`
+- `我已经有读书笔记目录`
+
 用户说出以下意思时，退出读书模式：
 
 - `退出读书模式`
@@ -25,6 +32,36 @@ description: 用于进入读书模式、沉淀读书笔记、维护阅读画像�
 - `今天先读到这里`
 
 如果平台支持会话状态，一小时没有新消息时自动退出读书模式。通用做法见 `scripts/reading_tool.py` 的 `expire` 命令。
+
+## 首次设置
+
+第一次使用时，如果还没有每日读书目录，不要猜测用户的私人路径，也不要直接创建文件。先提醒用户选择一种目录方式：
+
+1. 上级目录：在用户给的目录下创建或复用 `每日读书`。
+2. 每日读书根目录：直接在用户给的目录下放 `读书笔记`、`每周推荐书单`、`阅读画像.md`、`设置.md`。
+3. 现有读书笔记目录：把用户给的目录当作书籍笔记所在位置，不再嵌套新的 `读书笔记`。
+
+创建前先展示将要创建或复用的结构，等用户确认后再创建。可用脚本先预览：
+
+```bash
+python3 scripts/reading_tool.py --parent /path/to/folder plan
+python3 scripts/reading_tool.py --root /path/to/每日读书 plan
+python3 scripts/reading_tool.py --notes-dir /path/to/读书笔记 plan
+```
+
+用户确认后再运行对应的 `init`。
+
+默认结构：
+
+```text
+每日读书/
+├── 读书笔记/
+├── 每周推荐书单/
+├── 阅读画像.md
+└── 设置.md
+```
+
+如果用户给的目录里已经有 `读书笔记` 加 `每周推荐书单` 或 `每周推荐清单`，判断它已经是每日读书根目录，直接复用，不要再新建第二层 `每日读书` 或 `读书笔记`。
 
 ## 读书模式
 
@@ -88,7 +125,9 @@ python3 scripts/reading_tool.py check
 
 脚本通过这些环境变量定位用户的读书目录：
 
+- `DAILY_READING_PARENT`：指定上级目录，在下面创建或复用 `每日读书`。
 - `DAILY_READING_ROOT`：直接指定“每日读书”根目录。
-- `OBSIDIAN_VAULT_PATH`：指定 Obsidian 库，再配合 `DAILY_READING_RELATIVE_DIR`，默认相对目录为 `微信读书/每日读书`。
+- `DAILY_READING_NOTES_DIR`：指定现有 `读书笔记` 目录，不再嵌套新的 `读书笔记`。
+- `OBSIDIAN_VAULT_PATH`：指定 Obsidian 库，再配合 `DAILY_READING_RELATIVE_DIR`，默认相对目录为 `每日读书`。
 
 不要默认猜测用户的私人目录。没有路径时，先提醒用户配置。
