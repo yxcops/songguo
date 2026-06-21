@@ -7,7 +7,7 @@ description: 用于初始化每日读书目录、进入读书模式、沉淀读�
 
 这个 Skill 帮用户把读书过程变成可持续的记录系统：开始读书、讨论内容、记录笔记、更新阅读画像、每周推荐下一批适合读的书。
 
-它默认不绑定任何单一平台。自动定时、渠道推送、读取日记或历史对话，都属于平台增强能力，接入前先读 `references/platform-setup.md`。
+它默认不绑定任何单一平台。自动定时、渠道推送、读取日记、历史对话或共享记忆，都属于平台增强能力，接入前先读 `references/platform-setup.md`。
 
 ## 触发方式
 
@@ -75,6 +75,20 @@ python3 scripts/reading_tool.py --notes-dir /path/to/读书笔记 plan
 
 读书笔记目标不是流水账，而是让用户以后值得重看。笔记格式参考 `references/note-and-recommendation-formats.md` 和 `templates/book-note.md`。
 
+如果用户明确要求把这次讨论写入笔记，可使用脚本追加：
+
+```bash
+python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind thought --text "用户的想法或讨论结论"
+```
+
+常用类型：
+
+- `excerpt`：摘录或用户转述的原文。
+- `thought`：用户自己的想法。
+- `question`：用户想继续追问的问题。
+- `summary`：讨论后得到的结论。
+- `action`：读完后要做的事。
+
 ## 笔记原则
 
 写读书笔记时遵守这些规则：
@@ -97,7 +111,22 @@ python3 scripts/reading_tool.py --notes-dir /path/to/读书笔记 plan
 
 生成格式见 `templates/weekly-books.md`。
 
-Skill 只提供推荐逻辑和模板，不会自己常驻运行。每周一早上 6 点自动生成，需要由 Hermes、OpenClaw、Codex 自动化或系统任务接入。
+每周推荐前，先生成“推荐上下文包”：
+
+```bash
+python3 scripts/reading_tool.py --root /path/to/每日读书 context --days 45
+```
+
+上下文包默认只读取每日读书目录里的阅读画像、近期读书笔记和近期推荐书单。只有用户明确授权时，才用 `--extra-source` 读取额外记忆文件：
+
+```bash
+python3 scripts/reading_tool.py --root /path/to/每日读书 context \
+  --extra-source /path/to/已授权的记忆摘要.md
+```
+
+生成推荐时要把“本周判断依据”写清楚：读取了哪些读书笔记、阅读画像里有哪些变化、额外记忆提供了什么线索、哪些来源未授权或不确定。
+
+Skill 只提供推荐逻辑、上下文整理和模板，不会自己常驻运行。每周一早上 6 点自动生成并发送，需要由 Hermes、OpenClaw、Codex 自动化或系统任务接入。配置自动发送前必须先读 `references/platform-setup.md`。
 
 ## 阅读画像
 
@@ -122,6 +151,16 @@ python3 scripts/reading_tool.py check
 ```
 
 这个脚本可以创建 `每日读书/读书笔记`、`每日读书/每周推荐书单` 等目录，追加读书笔记，并记录读书模式状态。
+
+常用命令：
+
+```bash
+python3 scripts/reading_tool.py --root /path/to/每日读书 check
+python3 scripts/reading_tool.py --root /path/to/每日读书 start --book "书名"
+python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind summary --text "今天的讨论结论"
+python3 scripts/reading_tool.py --root /path/to/每日读书 context --days 45
+python3 scripts/reading_tool.py --root /path/to/每日读书 recommendation
+```
 
 脚本通过这些环境变量定位用户的读书目录：
 

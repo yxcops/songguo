@@ -1,4 +1,4 @@
 interface:
   display_name: "每日读书"
-  short_description: "进入读书模式，沉淀读书笔记并生成每周推荐书单。"
-  default_prompt: "请使用 $daily-reading，先检查是否已经完成每日读书目录设置；如果没有设置，先引导我选择目录，确认后再创建。"
+  short_description: "进入读书模式，沉淀读书笔记，并基于阅读画像和授权记忆生成每周推荐书单。"
+  default_prompt: "请使用 $daily-reading，先检查是否已完成每日读书目录设置；如果没有设置，先引导我选择目录。设置完成后，说明如何开始读书、记录笔记，以及如何配置每周推荐书单。"

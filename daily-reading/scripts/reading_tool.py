@@ -12,7 +12,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -197,6 +197,69 @@ def read_text_if_exists(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def strip_frontmatter(text: str) -> str:
+    if not text.startswith("---"):
+        return text
+    parts = text.split("---", 2)
+    if len(parts) < 3:
+        return text
+    return parts[2].lstrip()
+
+
+def compact_markdown(text: str, max_chars: int) -> str:
+    text = strip_frontmatter(text)
+    text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars].rstrip() + "\n\n...（已截断）"
+
+
+def safe_read_markdown(path: Path, max_chars: int) -> str:
+    try:
+        return compact_markdown(path.read_text(encoding="utf-8"), max_chars)
+    except UnicodeDecodeError:
+        return "无法按 UTF-8 读取，已跳过正文。"
+    except OSError as exc:
+        return f"读取失败：{exc}"
+
+
+def recent_markdown_files(path: Path, *, days: int, max_files: int) -> list[Path]:
+    if not path.exists():
+        return []
+    cutoff = datetime.now().timestamp() - timedelta(days=days).total_seconds()
+    files = []
+    for item in path.rglob("*.md"):
+        if item.name.startswith("."):
+            continue
+        try:
+            stat = item.stat()
+        except OSError:
+            continue
+        if stat.st_mtime >= cutoff:
+            files.append((stat.st_mtime, item))
+    files.sort(key=lambda pair: pair[0], reverse=True)
+    return [item for _, item in files[:max_files]]
+
+
+def file_mtime_iso(path: Path) -> str:
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime).astimezone().replace(microsecond=0).isoformat()
+    except OSError:
+        return "未知"
+
+
+def render_file_excerpt(path: Path, *, title: str, max_chars: int) -> str:
+    return "\n".join(
+        [
+            f"### {title}",
+            f"- 路径：{path}",
+            f"- 更新时间：{file_mtime_iso(path)}",
+            "",
+            safe_read_markdown(path, max_chars),
+        ]
+    )
+
+
 def load_state(path: Path) -> dict:
     if not path.exists():
         return {}
@@ -231,7 +294,21 @@ status: active
 
 - 每周自动推荐：未配置
 - 渠道提醒：未配置
+- 发送渠道：
+- 发送目标：
 - 读取日记或历史记录：未授权
+- 读取共享记忆或项目摘要：未授权
+
+## 自动任务
+
+- 运行时间：每周一 06:00（未确认）
+- 推荐数量：5
+- 输出目录：每周推荐书单
+- 发送内容：书单摘要和文件位置
+
+## 授权记忆来源
+
+<!-- 只记录用户明确授权的文件路径或摘要来源，不要默认写入私人目录。 -->
 
 ## 说明
 
@@ -400,6 +477,7 @@ def cmd_check(args: argparse.Namespace) -> int:
         print(describe_layout(layout))
     print(f"状态文件：{spath}")
     print("核心功能：读书模式、读书笔记、阅读画像、每周推荐书单")
+    print("推荐上下文包：可用 context 命令基于阅读画像、近期笔记、历史书单和授权记忆生成")
     print("自动定时和渠道推送：需要由所在平台单独配置")
     return 0
 
@@ -581,6 +659,12 @@ status: draft
 
 ## 本周判断依据
 
+- 阅读画像：
+- 近期读书笔记：
+- 历史推荐书单：
+- 额外授权记忆：
+- 未读取或未授权来源：
+- 本周推荐策略：
 
 ## 推荐书
 
@@ -641,6 +725,14 @@ status: draft
 
 ## 本周读法
 
+
+## 发送记录
+
+- 是否已发送：
+- 发送渠道：
+- 发送时间：
+- 发送摘要：
+
 """
 
 
@@ -652,6 +744,112 @@ def cmd_recommendation(args: argparse.Namespace) -> int:
     if not path.exists():
         path.write_text(weekly_template(week), encoding="utf-8")
     print(f"已准备每周推荐书单：{path}")
+    return 0
+
+
+def cmd_context(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    profile_path = layout["profile_path"]
+    settings_path = layout["settings_path"]
+    notes = recent_markdown_files(layout["notes_dir"], days=args.days, max_files=args.max_notes)
+    weekly = recent_markdown_files(layout["weekly_dir"], days=args.days, max_files=args.max_weekly)
+
+    lines = [
+        "# 每周推荐上下文包",
+        "",
+        f"- 生成时间：{now_iso()}",
+        f"- 读取天数：最近 {args.days} 天",
+        f"- 根目录：{layout['root']}",
+        f"- 读书笔记目录：{layout['notes_dir']}",
+        f"- 每周推荐目录：{layout['weekly_dir']}",
+        "",
+        "## 读取范围",
+        "",
+        "- 默认读取：阅读画像、设置文件、近期读书笔记、近期每周推荐书单。",
+        "- 额外记忆：只读取通过 `--extra-source` 明确传入的文件。",
+        "- 未授权内容：日记、聊天历史、私人目录、微信读书数据等不会自动读取。",
+        "",
+    ]
+
+    if settings_path.exists():
+        lines.extend(
+            [
+                "## 设置摘要",
+                "",
+                render_file_excerpt(settings_path, title=settings_path.name, max_chars=args.max_chars),
+                "",
+            ]
+        )
+
+    if profile_path.exists():
+        lines.extend(
+            [
+                "## 阅读画像",
+                "",
+                render_file_excerpt(profile_path, title=profile_path.name, max_chars=args.max_chars),
+                "",
+            ]
+        )
+    else:
+        lines.extend(["## 阅读画像", "", "未找到阅读画像。", ""])
+
+    lines.extend(["## 近期读书笔记", ""])
+    if notes:
+        for path in notes:
+            lines.append(render_file_excerpt(path, title=path.name, max_chars=args.max_chars))
+            lines.append("")
+    else:
+        lines.extend(["最近范围内没有读书笔记。", ""])
+
+    lines.extend(["## 近期推荐书单", ""])
+    if weekly:
+        for path in weekly:
+            lines.append(render_file_excerpt(path, title=path.name, max_chars=args.max_chars))
+            lines.append("")
+    else:
+        lines.extend(["最近范围内没有历史推荐书单。", ""])
+
+    lines.extend(["## 额外授权记忆", ""])
+    if args.extra_source:
+        for value in args.extra_source:
+            path = Path(value).expanduser()
+            if path.is_dir():
+                lines.extend(
+                    [
+                        f"### {path}",
+                        "这是目录，不是明确文件。为避免越界读取，已跳过；请改传具体 Markdown 文件。",
+                        "",
+                    ]
+                )
+                continue
+            if not path.exists():
+                lines.extend([f"### {path}", "文件不存在，已跳过。", ""])
+                continue
+            lines.append(render_file_excerpt(path, title=path.name, max_chars=args.max_chars))
+            lines.append("")
+    else:
+        lines.extend(["未提供额外授权记忆文件。", ""])
+
+    lines.extend(
+        [
+            "## 生成书单时必须遵守",
+            "",
+            "- 固定推荐 5 本书。",
+            "- 在“本周判断依据”里列出读取范围和未授权来源。",
+            "- 不确定的作者、版本、出版社、出版日期写“不确定”。",
+            "- 推荐理由要连接用户近期问题、阅读画像或读书笔记，不要只写泛泛好书。",
+            "- 如果没有配置发送渠道，只写入文件，不声称已发送。",
+        ]
+    )
+
+    output = "\n".join(lines).rstrip() + "\n"
+    if args.output:
+        out_path = Path(args.output).expanduser()
+        out_path.parent.mkdir(parents=True, exist_ok=True)
+        out_path.write_text(output, encoding="utf-8")
+        print(f"已写入推荐上下文包：{out_path}")
+    else:
+        print(output, end="")
     return 0
 
 
@@ -704,6 +902,18 @@ def build_parser() -> argparse.ArgumentParser:
     recommendation = subparsers.add_parser("recommendation", help="创建每周推荐书单草稿")
     recommendation.add_argument("--week", help="ISO 周，例如 2026-W25")
 
+    context = subparsers.add_parser("context", help="生成每周推荐用的上下文包")
+    context.add_argument("--days", type=int, default=45, help="读取最近多少天的读书笔记和历史书单")
+    context.add_argument("--max-notes", type=int, default=12, help="最多读取多少篇近期读书笔记")
+    context.add_argument("--max-weekly", type=int, default=4, help="最多读取多少篇近期历史书单")
+    context.add_argument("--max-chars", type=int, default=1800, help="每个文件最多摘取多少字符")
+    context.add_argument(
+        "--extra-source",
+        action="append",
+        help="用户明确授权的额外记忆 Markdown 文件，可重复传入；不要传整个私人目录",
+    )
+    context.add_argument("--output", help="把上下文包写入指定文件；不传则输出到终端")
+
     return parser
 
 
@@ -720,6 +930,7 @@ def main() -> int:
         "expire": cmd_expire,
         "note": cmd_note,
         "recommendation": cmd_recommendation,
+        "context": cmd_context,
     }
     return commands[args.command](args)
 
