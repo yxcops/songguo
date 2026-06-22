@@ -19,23 +19,21 @@ This repository collects AI Skills that I use, refine, and gradually publish. Ea
 
 The Skills I use most and consider easiest for others to inspect and install.
 
-### 📝 Notes & Journaling
+### 📚 Notes & Learning
 
 **Obsidian Diary**
 
 [obsidian-diary](#obsidian-diary) - Turn Obsidian or local Markdown diary writing, historical backfill, format checks, and export into a stable Agent workflow.
+
+**Daily Reading**
+
+[daily-reading](#daily-reading) - Enter reading mode, maintain a reading profile from authorized memory and project materials, and generate a personalized weekly book list.
 
 ### 🧠 AI Memory & Collaboration
 
 **Shared Memory Hub**
 
 [shared-memory-hub](#shared-memory-hub) - Create and maintain a shared Obsidian or local Markdown memory vault for Codex, Hermes, Claude Code, OpenClaw, and other Agents.
-
-### 📚 Reading & Learning
-
-**Daily Reading**
-
-[daily-reading](#daily-reading) - Enter reading mode, maintain a reading profile from authorized memory and project materials, and generate a personalized weekly book list.
 
 ### 🎨 Content & Visuals
 
@@ -55,9 +53,9 @@ The Skills I use most and consider easiest for others to inspect and install.
 
 | Name | Skill | Category | One-liner | Install |
 |---|---|---|---|---|
-| Obsidian Diary | [obsidian-diary](#obsidian-diary) | Notes & Journaling | Write current-day diary entries, backfill old entries explicitly, check format, and export text | [Install](https://github.com/yxcops/songguo-skills/tree/main/obsidian-diary) |
+| Obsidian Diary | [obsidian-diary](#obsidian-diary) | Notes & Learning | Write current-day diary entries, backfill old entries explicitly, check format, and export text | [Install](https://github.com/yxcops/songguo-skills/tree/main/obsidian-diary) |
 | Shared Memory Hub | [shared-memory-hub](#shared-memory-hub) | Memory & Collaboration | Build a shared Obsidian or Markdown memory vault for multiple AI Agents | [Install](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
-| Daily Reading | [daily-reading](#daily-reading) | Reading & Learning | Enter reading mode, maintain a memory-aware profile, and generate a weekly book list | [Install](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
+| Daily Reading | [daily-reading](#daily-reading) | Notes & Learning | Enter reading mode, maintain a memory-aware profile, and generate a weekly book list | [Install](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
 | Squirrel Illustration | [xiao-songshu-peitu](#xiao-songshu-peitu) | Content & Visuals | Create fixed squirrel-IP illustration plans and prompts for Chinese content | [Install](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
 | Codex Skill Launchpad | [codex-skill-launchpad](#codex-skill-launchpad) | Codex Workflow | Turn Codex Skills into visible entry folders and dedicated Codex chats | [Install](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
 

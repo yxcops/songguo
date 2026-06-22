@@ -19,23 +19,21 @@
 
 最常用、最适合别人直接查看和安装的几个 Skill。
 
-### 📝 记录与日记
+### 📚 记录与学习
 
 **Obsidian 日记本**
 
 [obsidian-diary](#obsidian-diary) - 把 Obsidian 或本地 Markdown 日记本里的当天记录、历史补写、格式检查和导出整理成一套稳定规则。
+
+**每日读书**
+
+[daily-reading](#daily-reading) - 进入读书模式，基于授权平台记忆和项目资料维护阅读画像，并按周生成个性化推荐书单。
 
 ### 🧠 记忆与协作
 
 **共享记忆库**
 
 [shared-memory-hub](#shared-memory-hub) - 给 Codex、Hermes、Claude Code、OpenClaw 等多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库。
-
-### 📚 阅读与学习
-
-**每日读书**
-
-[daily-reading](#daily-reading) - 进入读书模式，基于授权平台记忆和项目资料维护阅读画像，并按周生成个性化推荐书单。
 
 ### 🎨 内容与配图
 
@@ -55,9 +53,9 @@
 
 | 中文名 | Skill | 分类 | 一句话 | 安装链接 |
 |---|---|---|---|---|
-| Obsidian 日记本 | [obsidian-diary](#obsidian-diary) | 记录与日记 | 稳定记录当天日记、明确补写历史日记、检查格式并导出文本 | [安装](https://github.com/yxcops/songguo-skills/tree/main/obsidian-diary) |
+| Obsidian 日记本 | [obsidian-diary](#obsidian-diary) | 记录与学习 | 稳定记录当天日记、明确补写历史日记、检查格式并导出文本 | [安装](https://github.com/yxcops/songguo-skills/tree/main/obsidian-diary) |
 | 共享记忆库 | [shared-memory-hub](#shared-memory-hub) | 记忆与协作 | 给多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库 | [安装](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
-| 每日读书 | [daily-reading](#daily-reading) | 阅读与学习 | 进入读书模式，基于授权记忆维护阅读画像并生成每周推荐书单 | [安装](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
+| 每日读书 | [daily-reading](#daily-reading) | 记录与学习 | 进入读书模式，基于授权记忆维护阅读画像并生成每周推荐书单 | [安装](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
 | 小松鼠配图 | [xiao-songshu-peitu](#xiao-songshu-peitu) | 内容与配图 | 用固定小松鼠 IP 为中文内容生成正文配图方案和提示词 | [安装](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
 | Codex Skill 启动台 | [codex-skill-launchpad](#codex-skill-launchpad) | Codex 工作流 | 把 Codex Skills 做成可视化入口项目和专属对话 | [安装](https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad) |
 
