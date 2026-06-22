@@ -227,12 +227,18 @@ def strip_frontmatter(text: str) -> str:
     return parts[2].lstrip()
 
 
-def compact_markdown(text: str, max_chars: int) -> str:
+def compact_markdown_with_status(text: str, max_chars: int) -> tuple[str, bool]:
     text = strip_frontmatter(text)
     text = re.sub(r"\n{3,}", "\n\n", text).strip()
+    if max_chars <= 0:
+        return text, False
     if len(text) <= max_chars:
-        return text
-    return text[:max_chars].rstrip() + "\n\n...（已截断）"
+        return text, False
+    return text[:max_chars].rstrip() + "\n\n...（已截断）", True
+
+
+def compact_markdown(text: str, max_chars: int) -> str:
+    return compact_markdown_with_status(text, max_chars)[0]
 
 
 def safe_read_markdown(path: Path, max_chars: int) -> str:
@@ -242,6 +248,15 @@ def safe_read_markdown(path: Path, max_chars: int) -> str:
         return "无法按 UTF-8 读取，已跳过正文。"
     except OSError as exc:
         return f"读取失败：{exc}"
+
+
+def safe_read_markdown_with_status(path: Path, max_chars: int) -> tuple[str, bool]:
+    try:
+        return compact_markdown_with_status(path.read_text(encoding="utf-8"), max_chars)
+    except UnicodeDecodeError:
+        return "无法按 UTF-8 读取，已跳过正文。", False
+    except OSError as exc:
+        return f"读取失败：{exc}", False
 
 
 def recent_markdown_files(path: Path, *, days: int, max_files: int) -> list[Path]:
@@ -269,14 +284,23 @@ def file_mtime_iso(path: Path) -> str:
         return "未知"
 
 
-def render_file_excerpt(path: Path, *, title: str, max_chars: int) -> str:
+def render_file_excerpt(
+    path: Path,
+    *,
+    title: str,
+    max_chars: int,
+    truncated_files: list[str] | None = None,
+) -> str:
+    body, was_truncated = safe_read_markdown_with_status(path, max_chars)
+    if was_truncated and truncated_files is not None:
+        truncated_files.append(f"{title}（上限 {max_chars} 字）")
     return "\n".join(
         [
             f"### {title}",
             f"- 路径：{path}",
             f"- 更新时间：{file_mtime_iso(path)}",
             "",
-            safe_read_markdown(path, max_chars),
+            body,
         ]
     )
 
@@ -797,6 +821,7 @@ status: draft
 - 历史推荐反馈：
 - 额外授权记忆：
 - 未读取或未授权来源：
+- 是否出现上下文截断：
 - 本周推荐策略：
 
 ## 历史推荐反馈
@@ -827,10 +852,16 @@ status: draft
 ### 1. 《书名》
 
 - 作者：
+- 原书名：
+- 译者或版本说明：
 - 推荐版本：
 - 出版社：
 - 出版日期：
 - 事实核验状态：
+- 核验来源：
+- 未核验原因：
+- 质量依据：
+- 质量风险：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -839,10 +870,16 @@ status: draft
 ### 2. 《书名》
 
 - 作者：
+- 原书名：
+- 译者或版本说明：
 - 推荐版本：
 - 出版社：
 - 出版日期：
 - 事实核验状态：
+- 核验来源：
+- 未核验原因：
+- 质量依据：
+- 质量风险：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -851,10 +888,16 @@ status: draft
 ### 3. 《书名》
 
 - 作者：
+- 原书名：
+- 译者或版本说明：
 - 推荐版本：
 - 出版社：
 - 出版日期：
 - 事实核验状态：
+- 核验来源：
+- 未核验原因：
+- 质量依据：
+- 质量风险：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -863,10 +906,16 @@ status: draft
 ### 4. 《书名》
 
 - 作者：
+- 原书名：
+- 译者或版本说明：
 - 推荐版本：
 - 出版社：
 - 出版日期：
 - 事实核验状态：
+- 核验来源：
+- 未核验原因：
+- 质量依据：
+- 质量风险：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -875,10 +924,16 @@ status: draft
 ### 5. 《书名》
 
 - 作者：
+- 原书名：
+- 译者或版本说明：
 - 推荐版本：
 - 出版社：
 - 出版日期：
 - 事实核验状态：
+- 核验来源：
+- 未核验原因：
+- 质量依据：
+- 质量风险：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -918,6 +973,7 @@ def cmd_context(args: argparse.Namespace) -> int:
     settings_path = layout["settings_path"]
     notes = recent_markdown_files(layout["notes_dir"], days=args.days, max_files=args.max_notes)
     weekly = recent_markdown_files(layout["weekly_dir"], days=args.days, max_files=args.max_weekly)
+    truncated_files: list[str] = []
 
     lines = [
         "# 每周推荐上下文包",
@@ -931,6 +987,7 @@ def cmd_context(args: argparse.Namespace) -> int:
         "## 读取范围",
         "",
         "- 默认读取：阅读画像、设置文件、近期读书笔记、近期每周推荐书单。",
+        "- 阅读画像默认完整读取；如需限制，可设置 `--profile-max-chars`。",
         "- 额外记忆：只读取通过 `--extra-source` 明确传入的文件。",
         "- 未授权内容：日记、聊天历史、私人目录、微信读书数据等不会自动读取。",
         "",
@@ -941,7 +998,12 @@ def cmd_context(args: argparse.Namespace) -> int:
             [
                 "## 设置摘要",
                 "",
-                render_file_excerpt(settings_path, title=settings_path.name, max_chars=args.max_chars),
+                render_file_excerpt(
+                    settings_path,
+                    title=settings_path.name,
+                    max_chars=args.max_chars,
+                    truncated_files=truncated_files,
+                ),
                 "",
             ]
         )
@@ -951,7 +1013,12 @@ def cmd_context(args: argparse.Namespace) -> int:
             [
                 "## 阅读画像",
                 "",
-                render_file_excerpt(profile_path, title=profile_path.name, max_chars=args.max_chars),
+                render_file_excerpt(
+                    profile_path,
+                    title=profile_path.name,
+                    max_chars=args.profile_max_chars,
+                    truncated_files=truncated_files,
+                ),
                 "",
             ]
         )
@@ -961,7 +1028,14 @@ def cmd_context(args: argparse.Namespace) -> int:
     lines.extend(["## 近期读书笔记", ""])
     if notes:
         for path in notes:
-            lines.append(render_file_excerpt(path, title=path.name, max_chars=args.max_chars))
+            lines.append(
+                render_file_excerpt(
+                    path,
+                    title=path.name,
+                    max_chars=args.max_chars,
+                    truncated_files=truncated_files,
+                )
+            )
             lines.append("")
     else:
         lines.extend(["最近范围内没有读书笔记。", ""])
@@ -969,7 +1043,14 @@ def cmd_context(args: argparse.Namespace) -> int:
     lines.extend(["## 近期推荐书单", ""])
     if weekly:
         for path in weekly:
-            lines.append(render_file_excerpt(path, title=path.name, max_chars=args.max_chars))
+            lines.append(
+                render_file_excerpt(
+                    path,
+                    title=path.name,
+                    max_chars=args.max_chars,
+                    truncated_files=truncated_files,
+                )
+            )
             lines.append("")
     else:
         lines.extend(["最近范围内没有历史推荐书单。", ""])
@@ -990,10 +1071,27 @@ def cmd_context(args: argparse.Namespace) -> int:
             if not path.exists():
                 lines.extend([f"### {path}", "文件不存在，已跳过。", ""])
                 continue
-            lines.append(render_file_excerpt(path, title=path.name, max_chars=args.max_chars))
+            lines.append(
+                render_file_excerpt(
+                    path,
+                    title=path.name,
+                    max_chars=args.max_chars,
+                    truncated_files=truncated_files,
+                )
+            )
             lines.append("")
     else:
         lines.extend(["未提供额外授权记忆文件。", ""])
+
+    lines.extend(["## 截断提醒", ""])
+    if truncated_files:
+        lines.append("以下文件因为字符上限被截断：")
+        lines.extend(f"- {item}" for item in truncated_files)
+        lines.append("")
+        lines.append("正式推荐前先确认截断是否影响判断；如果阅读画像被截断，必须重新生成更完整的上下文包。")
+    else:
+        lines.append("未发现上下文文件被脚本截断。")
+    lines.append("")
 
     lines.extend(
         [
@@ -1001,7 +1099,11 @@ def cmd_context(args: argparse.Namespace) -> int:
             "",
             "- 固定推荐 5 本书。",
             "- 在“本周判断依据”里列出读取范围和未授权来源。",
-            "- 不确定的作者、版本、译本、出版社、出版日期和可获得性写“不确定，需核验”。",
+            "- 如果当前平台能联网或能查资料，推荐前必须核对作者、原书名、译者或版本、出版社、出版日期和当前可获得性。",
+            "- 每本书必须写核验来源；无法核验时写清未核验原因，不确定的作者、版本、译本、出版社、出版日期和可获得性写“不确定，需核验”。",
+            "- 每本书必须写质量依据，可参考豆瓣、Goodreads、出版社页、图书馆目录、课程书单、可靠书评、奖项、引用情况或长期读者口碑。",
+            "- 评分不能作为唯一理由；样本少、版本混乱、争议大或口碑分裂时，写入质量风险。",
+            "- 未完成事实核验或质量判断的书，不能作为本周最优先阅读项。",
             "- 推荐理由要连接用户近期问题、阅读画像或读书笔记，不要只写泛泛好书。",
             "- 过去 8 周已推荐过的书，除非用户明确要求，不重复推荐。",
             "- 同一主题每周最多推荐 2 本；每周至少 1 本短平快可执行书，最多 1 本重型理论书。",
@@ -1209,6 +1311,12 @@ def build_parser() -> argparse.ArgumentParser:
     context.add_argument("--max-notes", type=int, default=12, help="最多读取多少篇近期读书笔记")
     context.add_argument("--max-weekly", type=int, default=4, help="最多读取多少篇近期历史书单")
     context.add_argument("--max-chars", type=int, default=1800, help="每个文件最多摘取多少字符")
+    context.add_argument(
+        "--profile-max-chars",
+        type=int,
+        default=0,
+        help="阅读画像最多摘取多少字符；0 表示不截断",
+    )
     context.add_argument(
         "--extra-source",
         action="append",

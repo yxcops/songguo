@@ -194,7 +194,17 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 context \
 
 `context` 只生成推荐上下文包，不等于已经完成每周推荐。必须读取上下文包后，再填入 5 本具体书。
 
+阅读画像默认应完整进入上下文包。如果上下文包里出现“已截断”，先检查截断来源；如果阅读画像被截断，必须用更大的 `--profile-max-chars` 或 `--profile-max-chars 0` 重新生成上下文包后再推荐。
+
 生成推荐时要把“本周判断依据”写清楚：读取了哪些读书笔记、阅读画像里有哪些变化、历史推荐和反馈提供了什么线索、额外记忆提供了什么线索、哪些来源未授权或不确定。
+
+推荐书单必须先做事实核验和质量判断：
+
+- 当前平台能联网或能查资料时，每本书推荐前必须核对作者、原书名、译者或版本、出版社、出版日期和当前可获得性。
+- 每本书必须写“核验来源”。没有联网、没有授权或查不到可靠资料时，写清“未核验原因”，不要把空字段留给用户猜。
+- 每本书必须写“质量依据”。优先使用豆瓣、Goodreads、出版社页、图书馆目录、课程书单、可靠书评、奖项、引用情况或长期读者口碑等信号。
+- 不把评分当唯一标准。评分样本少、版本混乱、争议大或口碑分裂时，写入“质量风险”。
+- 未完成事实核验或质量判断的书，不能作为本周最优先阅读项；最多放入储备或探索位置，并明确风险。
 
 推荐书单必须处理去重和行动落地：
 
@@ -239,6 +249,7 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 start --book "书�
 python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind summary --text "今天的讨论结论"
 python3 scripts/reading_tool.py --root /path/to/每日读书 profile-context --source /path/to/已授权记忆摘要.md --save
 python3 scripts/reading_tool.py --root /path/to/每日读书 context --days 45
+python3 scripts/reading_tool.py --root /path/to/每日读书 context --profile-max-chars 0 --output /path/to/context.md
 python3 scripts/reading_tool.py --root /path/to/每日读书 recommendation-draft
 ```
 
