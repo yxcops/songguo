@@ -1,10 +1,12 @@
 ---
-week:
+period:
+start_date:
+end_date:
 created_at:
 status: draft
 ---
 
-# 每周推荐书单
+# 日期范围 每周推荐书单
 
 ## 本周判断依据
 

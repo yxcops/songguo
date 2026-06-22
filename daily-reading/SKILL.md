@@ -198,6 +198,8 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 context \
 
 生成推荐时要把“本周判断依据”写清楚：读取了哪些读书笔记、阅读画像里有哪些变化、历史推荐和反馈提供了什么线索、额外记忆提供了什么线索、哪些来源未授权或不确定。
 
+书单标题、文件名和 frontmatter 使用周一到周日的自然周日期范围，不使用 `2026-W26` 这类 ISO 周展示。例如 2026 年 6 月 22 日是周一，这一周应写成 `2026年6月22日~6月28日`。
+
 推荐书单必须先做事实核验和质量判断：
 
 - 当前平台能联网或能查资料时，每本书推荐前必须核对作者、原书名、译者或版本、出版社、出版日期和当前可获得性。
@@ -250,7 +252,7 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind summary
 python3 scripts/reading_tool.py --root /path/to/每日读书 profile-context --source /path/to/已授权记忆摘要.md --save
 python3 scripts/reading_tool.py --root /path/to/每日读书 context --days 45
 python3 scripts/reading_tool.py --root /path/to/每日读书 context --profile-max-chars 0 --output /path/to/context.md
-python3 scripts/reading_tool.py --root /path/to/每日读书 recommendation-draft
+python3 scripts/reading_tool.py --root /path/to/每日读书 recommendation-draft --start-date 2026-06-22
 ```
 
 脚本通过这些环境变量定位用户的读书目录：

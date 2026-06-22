@@ -12,7 +12,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -798,20 +798,54 @@ def cmd_note(args: argparse.Namespace) -> int:
     return 0
 
 
-def current_iso_week() -> str:
-    today = datetime.now().date()
-    year, week, _ = today.isocalendar()
-    return f"{year}-W{week:02d}"
+def week_start_for(day: date) -> date:
+    return day - timedelta(days=day.weekday())
 
 
-def weekly_template(week: str) -> str:
+def format_chinese_date(day: date, *, include_year: bool) -> str:
+    if include_year:
+        return f"{day.year}年{day.month}月{day.day}日"
+    return f"{day.month}月{day.day}日"
+
+
+def format_week_period(start_date: date) -> str:
+    end_date = start_date + timedelta(days=6)
+    return (
+        f"{format_chinese_date(start_date, include_year=True)}~"
+        f"{format_chinese_date(end_date, include_year=end_date.year != start_date.year)}"
+    )
+
+
+def parse_week_start(value: Optional[str]) -> date:
+    if not value:
+        return week_start_for(datetime.now().date())
+
+    text = value.strip()
+    iso_week = re.fullmatch(r"(\d{4})-W(\d{1,2})", text)
+    if iso_week:
+        year = int(iso_week.group(1))
+        week = int(iso_week.group(2))
+        try:
+            return date.fromisocalendar(year, week, 1)
+        except ValueError as exc:
+            raise SystemExit(f"无法识别周参数：{value}") from exc
+
+    try:
+        return week_start_for(datetime.strptime(text, "%Y-%m-%d").date())
+    except ValueError as exc:
+        raise SystemExit("无法识别日期。请使用 --start-date 2026-06-22，或兼容旧参数 --week 2026-W26。") from exc
+
+
+def weekly_template(period: str, start_date: date, end_date: date) -> str:
     return f"""---
-week: {quote_yaml(week)}
+period: {quote_yaml(period)}
+start_date: {quote_yaml(start_date.isoformat())}
+end_date: {quote_yaml(end_date.isoformat())}
 created_at: {quote_yaml(now_iso())}
 status: draft
 ---
 
-# {week} 每周推荐书单
+# {period} 每周推荐书单
 
 ## 本周判断依据
 
@@ -958,10 +992,12 @@ status: draft
 def cmd_recommendation(args: argparse.Namespace) -> int:
     layout = resolve_layout(args)
     ensure_layout(layout)
-    week = args.week or current_iso_week()
-    path = layout["weekly_dir"] / f"{week} 每周推荐书单.md"
+    start_date = parse_week_start(args.start_date or args.week)
+    end_date = start_date + timedelta(days=6)
+    period = format_week_period(start_date)
+    path = layout["weekly_dir"] / f"{period} 每周推荐书单.md"
     if not path.exists():
-        atomic_write_text(path, weekly_template(week))
+        atomic_write_text(path, weekly_template(period, start_date, end_date))
     print(f"已准备每周推荐书单草稿：{path}")
     print("注意：这里只创建草稿；还需要 Agent 读取上下文包后填入 5 本具体推荐书。")
     return 0
@@ -1301,10 +1337,12 @@ def build_parser() -> argparse.ArgumentParser:
     note.add_argument("--stdin", action="store_true", help="从标准输入读取笔记内容")
 
     recommendation_draft = subparsers.add_parser("recommendation-draft", help="创建每周推荐书单草稿")
-    recommendation_draft.add_argument("--week", help="ISO 周，例如 2026-W25")
+    recommendation_draft.add_argument("--start-date", help="自然周内任一天，例如 2026-06-22；输出为周一到周日日期范围")
+    recommendation_draft.add_argument("--week", help="兼容旧参数：ISO 周，例如 2026-W25；输出仍使用周一到周日日期范围")
 
     recommendation = subparsers.add_parser("recommendation", help="兼容旧命令：创建每周推荐书单草稿")
-    recommendation.add_argument("--week", help="ISO 周，例如 2026-W25")
+    recommendation.add_argument("--start-date", help="自然周内任一天，例如 2026-06-22；输出为周一到周日日期范围")
+    recommendation.add_argument("--week", help="兼容旧参数：ISO 周，例如 2026-W25；输出仍使用周一到周日日期范围")
 
     context = subparsers.add_parser("context", help="生成每周推荐用的上下文包")
     context.add_argument("--days", type=int, default=45, help="读取最近多少天的读书笔记和历史书单")
