@@ -1,22 +1,23 @@
 ---
 name: daily-reading
-description: 用于用户说“开始读书”“开始读某本书”、明确要求使用 daily-reading、初始化每日读书目录、进入读书模式并记录、写入读书笔记、基于授权资料初始化阅读画像，或生成每周推荐书单草稿的通用 Skill。兼容 Codex、Hermes、Claude Code、OpenClaw 或其他能读写 Markdown 的 Agent；普通读书建议、泛泛推荐书或读书习惯建议时，先轻量回答，不自动进入写文件流程。
+description: 用于用户说“开始读书”“开始读某本书”、明确要求使用 daily-reading、初始化每日读书目录、进入读书模式并记录、维护想读/在读/暂停/已读/放弃的书目索引、写入读书笔记、基于授权资料初始化或审视阅读画像，或生成每周推荐书单草稿的通用 Skill。兼容 Codex、Hermes、Claude Code、OpenClaw 或其他能读写 Markdown 的 Agent；普通读书建议、泛泛推荐书或读书习惯建议时，先轻量回答，不自动进入写文件流程。
 ---
 
 # 每日读书 daily-reading
 
-这个 Skill 帮用户把读书过程变成可持续的记录系统：讨论当前阅读材料、按需记录笔记、维护阅读画像、生成每周推荐书单草稿。
+这个 Skill 帮用户把读书过程变成可持续的记录系统：讨论当前阅读材料、维护书目状态、按需记录笔记、审视阅读画像、生成每周推荐书单草稿。
 
 它默认不绑定任何单一平台。自动定时、渠道推送、读取日记、历史对话或共享记忆，都属于平台增强能力，接入前先读 `references/platform-setup.md`。
 
 ## 核心任务
 
-只处理四类任务：
+只处理五类任务：
 
 1. 初始化或复用用户确认的每日读书目录。
-2. 进入读书模式，围绕当前书讨论。
-3. 在用户明确要求时，把内容写入读书笔记。
-4. 基于阅读画像、近期笔记和用户授权资料，生成每周固定 5 本推荐书单草稿。
+2. 维护书目索引，记录想读、在读、暂停、已读和放弃。
+3. 进入读书模式，围绕当前书讨论。
+4. 在用户明确要求时，把内容写入读书笔记。
+5. 基于书目索引、阅读画像、近期笔记和用户授权资料，生成每周固定 5 本推荐书单草稿。
 
 ## 禁止行为
 
@@ -33,9 +34,9 @@ description: 用于用户说“开始读书”“开始读某本书”、明确�
 
 | 能力 | 有能力时 | 无能力时 |
 |---|---|---|
-| 本地文件读写 | 可 `plan`、`init`、`note`、`context` | 只输出手动步骤或模板 |
+| 本地文件读写 | 可 `plan`、`init`、`start`、`note`、`want`、`pause`、`resume`、`finish`、`abandon`、`context` | 只输出手动步骤或模板 |
 | shell 脚本 | 可运行 `scripts/reading_tool.py` | 不声称已运行脚本 |
-| 长期状态 | 可维护读书模式状态 | 只基于当前会话提醒用户 |
+| 长期状态 | 可维护读书模式状态和书目索引 | 只基于当前会话提醒用户 |
 | 定时任务 | 可接入每周推荐任务 | 只说明需要平台额外配置 |
 | 推送渠道 | 可发送书单摘要和文件位置 | 只写文件，不声称已发送 |
 
@@ -58,6 +59,11 @@ description: 用于用户说“开始读书”“开始读某本书”、明确�
 - `初始化每日读书`
 - `设置读书目录`
 - `进入读书模式并记录`
+- `加入想读`
+- `暂停这本书`
+- `继续读这本书`
+- `这本书读完了`
+- `放弃这本书`
 - `把这个记一下`
 - `写进读书笔记`
 - `生成每周推荐书单`
@@ -95,6 +101,7 @@ python3 scripts/reading_tool.py --notes-dir /path/to/读书笔记 plan
 每日读书/
 ├── 读书笔记/
 ├── 每周推荐书单/
+├── 书目索引.md
 ├── 阅读画像.md
 └── 设置.md
 ```
@@ -141,6 +148,14 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 profile-context \
 4. 用户可以不按章节顺序读，只记录对他有用的部分。
 5. 用户只是讨论时，不自动写笔记；只有用户明确说“记一下”“写进读书笔记”“生成读书笔记”“总结并记录”时才写入文件。
 
+用户说“开始读《书名》”时，如果平台能读写文件，运行 `start --book`。这个动作必须完成三件事：
+
+1. 创建或复用 `读书笔记/《书名》.md`。
+2. 在 `书目索引.md` 中把这本书标记为“在读”。
+3. 把当前读书模式状态指向这本书和这份笔记。
+
+如果用户只说“开始读书”但没有书名，可以先进入读书模式；等用户确认书名后，再把正式书名写入笔记和书目索引。
+
 读书笔记目标不是流水账，而是让用户以后值得重看。笔记格式参考 `references/note-and-recommendation-formats.md` 和 `templates/book-note.md`。
 
 如果用户明确要求把这次讨论写入笔记，可使用脚本追加：
@@ -157,6 +172,34 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind thought
 - `summary`：讨论后得到的结论。
 - `action`：读完后要做的事。
 
+## 书目索引和生命周期
+
+`书目索引.md` 是长期读书状态的中心，不是推荐书单。它记录每本书的状态、笔记文件、最近活动、推荐来源、下一步和画像待审视状态。
+
+状态只使用这五类：
+
+- `想读`：用户明确想以后读，暂时不进入读书模式。
+- `在读`：正在读，可能有一份正在追加的读书笔记。
+- `暂停`：暂时放下，以后可能恢复。
+- `已读`：已经读完。
+- `放弃`：明确不继续读，后续推荐应谨慎避开同类原因。
+
+生命周期动作：
+
+```bash
+python3 scripts/reading_tool.py --root /path/to/每日读书 want --book "书名"
+python3 scripts/reading_tool.py --root /path/to/每日读书 start --book "书名"
+python3 scripts/reading_tool.py --root /path/to/每日读书 pause --book "书名" --reason "暂停原因"
+python3 scripts/reading_tool.py --root /path/to/每日读书 resume --book "书名"
+python3 scripts/reading_tool.py --root /path/to/每日读书 finish --book "书名" --summary "读完后的判断"
+python3 scripts/reading_tool.py --root /path/to/每日读书 abandon --book "书名" --reason "放弃原因"
+python3 scripts/reading_tool.py --root /path/to/每日读书 profile-reviewed --book "书名"
+```
+
+写笔记后不要直接改写稳定画像。先在书目索引里把“画像待审视”标为“是”，并把下一步写成“下次更新阅读画像时审视这条笔记是否影响推荐策略”。
+
+用户说“这本书读完了”时，先运行 `finish`，再提醒需要做读完复盘和画像审视。读完复盘可以更新 `阅读画像.md`，但必须区分稳定画像、阶段画像和临时信号，不要把一次感受直接写成长期判断。
+
 ## 笔记原则
 
 写读书笔记时遵守这些规则：
@@ -172,7 +215,7 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind thought
 每周推荐书单固定推荐 5 本书。推荐依据应包含：
 
 1. 用户近期正在做的事和反复提到的问题。
-2. 用户已有读书记录和阅读画像。
+2. 用户已有书目索引、读书记录和阅读画像。
 3. 书本身的质量、版本可靠性和可获得性。
 4. 这本书适合解决的问题。
 5. 建议读法：精读、跳读、查阅，或先读指定章节。
@@ -185,7 +228,7 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind thought
 python3 scripts/reading_tool.py --root /path/to/每日读书 context --days 45
 ```
 
-上下文包默认只读取每日读书目录里的阅读画像、近期读书笔记和近期推荐书单。只有用户明确授权时，才用 `--extra-source` 读取额外记忆文件：
+上下文包默认只读取每日读书目录里的书目索引、阅读画像、近期读书笔记和近期推荐书单。只有用户明确授权时，才用 `--extra-source` 读取额外记忆文件：
 
 ```bash
 python3 scripts/reading_tool.py --root /path/to/每日读书 context \
@@ -196,7 +239,9 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 context \
 
 阅读画像默认应完整进入上下文包。如果上下文包里出现“已截断”，先检查截断来源；如果阅读画像被截断，必须用更大的 `--profile-max-chars` 或 `--profile-max-chars 0` 重新生成上下文包后再推荐。
 
-生成推荐时要把“本周判断依据”写清楚：读取了哪些读书笔记、阅读画像里有哪些变化、历史推荐和反馈提供了什么线索、额外记忆提供了什么线索、哪些来源未授权或不确定。
+生成推荐时要把“本周判断依据”写清楚：读取了哪些书目状态、哪些读书笔记、阅读画像里有哪些变化、历史推荐和反馈提供了什么线索、额外记忆提供了什么线索、哪些来源未授权或不确定。
+
+如果书目索引中有“画像待审视”为“是”的书，先判断它是否影响本周推荐策略。可以把判断写进本周推荐依据；如果已经更新阅读画像，再运行 `profile-reviewed` 清除该书的待审视标记。
 
 书单标题、文件名和 frontmatter 使用周一到周日的自然周日期范围，不使用 `2026-W26` 这类 ISO 周展示。例如 2026 年 6 月 22 日是周一，这一周应写成 `2026年6月22日~6月28日`。
 
@@ -210,6 +255,7 @@ python3 scripts/reading_tool.py --root /path/to/每日读书 context \
 
 推荐书单必须处理去重和行动落地：
 
+- 先检查书目索引，避免重复推荐已读、正在读、暂停或明确放弃的书；如果仍要推荐，必须说明理由。
 - 过去 8 周已推荐过的书，除非用户明确要求，不重复推荐。
 - 同一主题每周最多推荐 2 本，避免堆在一个方向。
 - 每周至少 1 本短平快可执行的书，最多 1 本重型理论书。
@@ -248,7 +294,10 @@ python3 scripts/reading_tool.py check
 ```bash
 python3 scripts/reading_tool.py --root /path/to/每日读书 check
 python3 scripts/reading_tool.py --root /path/to/每日读书 start --book "书名"
+python3 scripts/reading_tool.py --root /path/to/每日读书 want --book "书名"
 python3 scripts/reading_tool.py --root /path/to/每日读书 note --kind summary --text "今天的讨论结论"
+python3 scripts/reading_tool.py --root /path/to/每日读书 finish --book "书名"
+python3 scripts/reading_tool.py --root /path/to/每日读书 book-index
 python3 scripts/reading_tool.py --root /path/to/每日读书 profile-context --source /path/to/已授权记忆摘要.md --save
 python3 scripts/reading_tool.py --root /path/to/每日读书 context --days 45
 python3 scripts/reading_tool.py --root /path/to/每日读书 context --profile-max-chars 0 --output /path/to/context.md

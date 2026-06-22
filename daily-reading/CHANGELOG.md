@@ -1,5 +1,31 @@
 # Changelog
 
+## v1.4 - 2026-06-22
+
+### Changed
+
+- 新增 `书目索引.md`，用于记录想读、在读、暂停、已读和放弃。
+- `start --book` 创建或复用读书笔记时，同步把书目状态标记为在读。
+- 新增 `want`、`pause`、`resume`、`finish`、`abandon` 和 `profile-reviewed` 命令，用于管理读书生命周期。
+- `note` 写入笔记后会把对应书目标记为“画像待审视”，但不直接改写稳定阅读画像。
+- `context` 推荐上下文包新增书目索引读取，用于推荐前检查已读、在读、暂停、放弃和画像待审视书目。
+- 更新 `SKILL.md`、平台接入说明、笔记与推荐格式、阅读画像模板、每周推荐模板和 OpenAI 展示文案。
+
+### Verified
+
+- `SKILL.md` frontmatter 可解析。
+- `agents/openai.yaml` 可解析。
+- `scripts/reading_tool.py` 语法检查通过。
+- 官方 Skill 校验通过。
+- 已用临时目录验证 `plan`、`init`、`want`、`start`、`note`、`pause`、`resume`、`finish`、`profile-reviewed`、`context` 和 `recommendation-draft`。
+- 已确认 `context` 推荐上下文包包含 `书目索引.md`。
+
+### Not Included
+
+- 未安装到本机 Codex 可发现目录。
+- 未同步到 Hermes 本机运行版。
+- 未配置自动定时任务、外部推送渠道或微信读书自动读取。
+
 ## v1.3 - 2026-06-22
 
 ### Changed

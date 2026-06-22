@@ -23,6 +23,27 @@ NOTES_DIR_NAME = "读书笔记"
 WEEKLY_DIR_NAMES = ("每周推荐书单", "每周推荐清单")
 STATE_FILE_NAME = ".daily-reading-state.json"
 PROFILE_CONTEXT_FILE_NAME = "阅读画像初始化资料包.md"
+BOOK_INDEX_FILE_NAME = "书目索引.md"
+BOOK_INDEX_COLUMNS = (
+    "书名",
+    "状态",
+    "作者",
+    "开始日期",
+    "结束日期",
+    "笔记文件",
+    "最近活动",
+    "推荐来源",
+    "下一步",
+    "画像待审视",
+)
+BOOK_STATUS_LABELS = {
+    "want": "想读",
+    "reading": "在读",
+    "paused": "暂停",
+    "finished": "已读",
+    "abandoned": "放弃",
+}
+BOOK_STATUS_KEYS = {label: key for key, label in BOOK_STATUS_LABELS.items()}
 PROJECT_DOC_FILE_NAMES = (
     "AGENTS.md",
     "CLAUDE.md",
@@ -96,6 +117,7 @@ def build_layout(root: Path, notes_dir: Path, mode: str) -> dict:
         "root": root,
         "notes_dir": notes_dir,
         "weekly_dir": weekly_dir,
+        "book_index_path": root / BOOK_INDEX_FILE_NAME,
         "profile_path": root / "阅读画像.md",
         "settings_path": root / "设置.md",
         "state_path": root / STATE_FILE_NAME,
@@ -187,6 +209,7 @@ def describe_layout(layout: dict) -> str:
         f"根目录：{layout['root']}",
         f"读书笔记：{layout['notes_dir']}",
         f"每周推荐：{layout['weekly_dir']}",
+        f"书目索引：{layout['book_index_path']}",
         f"阅读画像：{layout['profile_path']}",
         f"设置文件：{layout['settings_path']}",
     ]
@@ -200,7 +223,7 @@ def describe_layout(layout: dict) -> str:
         seen_paths.add(path)
         action = "复用" if path.exists() else "创建"
         lines.append(f"- {action}：{path}")
-    for key in ("profile_path", "settings_path"):
+    for key in ("book_index_path", "profile_path", "settings_path"):
         path = layout[key]
         if path in seen_paths:
             continue
@@ -384,11 +407,13 @@ status: active
 - 根目录：{layout['root']}
 - 读书笔记：{layout['notes_dir']}
 - 每周推荐：{layout['weekly_dir']}
+- 书目索引：{layout['book_index_path']}
 - 阅读画像：{layout['profile_path']}
 
 ## 状态
 
 - 阅读画像初始化：未完成
+- 阅读画像待审视：无
 - 每周自动推荐：未配置
 - 渠道提醒：未配置
 - 发送渠道：
@@ -415,6 +440,161 @@ status: active
 
 这个文件记录每日读书 Skill 的本地目录设置。自动定时、渠道发送、读取日记或历史记录，需要在所在平台单独配置并经过用户确认。
 """
+
+
+def today_text() -> str:
+    return datetime.now().date().isoformat()
+
+
+def normalize_book_name(value: Optional[str]) -> str:
+    if not value:
+        return ""
+    text = value.strip()
+    if text.startswith("《") and text.endswith("》"):
+        text = text[1:-1]
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def display_book_name(value: Optional[str]) -> str:
+    text = normalize_book_name(value)
+    return f"《{text}》" if text else "未命名"
+
+
+def table_cell(value: Optional[str]) -> str:
+    if value is None:
+        return ""
+    return str(value).replace("\n", " ").replace("|", "／").strip()
+
+
+def split_table_row(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+
+def relative_display_path(path: Optional[Path], root: Path) -> str:
+    if not path:
+        return ""
+    try:
+        return str(path.relative_to(root))
+    except ValueError:
+        return str(path)
+
+
+def book_index_template(rows: list[dict[str, str]] | None = None) -> str:
+    rows = rows or []
+    lines = [
+        "# 书目索引",
+        "",
+        "这个文件记录每日读书 Skill 管理过的书。状态可为：想读、在读、暂停、已读、放弃。",
+        "",
+        "记笔记、读完或放弃一本书后，如果“画像待审视”为“是”，下次更新阅读画像时要判断它是否影响推荐策略。",
+        "",
+        "## 书目",
+        "",
+        "| " + " | ".join(BOOK_INDEX_COLUMNS) + " |",
+        "|" + "|".join("---" for _ in BOOK_INDEX_COLUMNS) + "|",
+    ]
+    for row in rows:
+        lines.append("| " + " | ".join(table_cell(row.get(column, "")) for column in BOOK_INDEX_COLUMNS) + " |")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def read_book_index(path: Path) -> list[dict[str, str]]:
+    text = read_text_if_exists(path)
+    if not text.strip():
+        return []
+
+    lines = text.splitlines()
+    rows: list[dict[str, str]] = []
+    in_table = False
+    for line in lines:
+        if not line.strip().startswith("|"):
+            if in_table:
+                break
+            continue
+        cells = split_table_row(line)
+        if cells == list(BOOK_INDEX_COLUMNS):
+            in_table = True
+            continue
+        if not in_table:
+            continue
+        if all(set(cell) <= {"-"} for cell in cells if cell):
+            continue
+        if len(cells) != len(BOOK_INDEX_COLUMNS):
+            continue
+        rows.append(dict(zip(BOOK_INDEX_COLUMNS, cells)))
+    return rows
+
+
+def write_book_index(path: Path, rows: list[dict[str, str]]) -> None:
+    atomic_write_text(path, book_index_template(rows))
+
+
+def ensure_book_index(path: Path) -> None:
+    if not path.exists():
+        atomic_write_text(path, book_index_template())
+
+
+def find_book_row(rows: list[dict[str, str]], book: str) -> Optional[dict[str, str]]:
+    target = normalize_book_name(book)
+    for row in rows:
+        if normalize_book_name(row.get("书名")) == target:
+            return row
+    return None
+
+
+def current_book_from_args_or_state(args: argparse.Namespace, state: dict) -> str:
+    book = normalize_book_name(getattr(args, "book", None) or state.get("book"))
+    if not book:
+        raise SystemExit("请提供书名，或先进入某本书的读书模式。")
+    return book
+
+
+def update_book_index(
+    layout: dict,
+    *,
+    book: str,
+    status: str,
+    note_path: Optional[Path] = None,
+    author: Optional[str] = None,
+    source: Optional[str] = None,
+    next_action: Optional[str] = None,
+    profile_review: Optional[bool] = None,
+) -> dict[str, str]:
+    path = layout["book_index_path"]
+    ensure_book_index(path)
+    rows = read_book_index(path)
+    row = find_book_row(rows, book)
+    if row is None:
+        row = {column: "" for column in BOOK_INDEX_COLUMNS}
+        row["书名"] = display_book_name(book)
+        rows.append(row)
+
+    previous_status = row.get("状态", "")
+    label = BOOK_STATUS_LABELS.get(status, status)
+    row["状态"] = label
+    if author:
+        row["作者"] = author
+    if note_path:
+        row["笔记文件"] = relative_display_path(note_path, layout["root"])
+    if source:
+        row["推荐来源"] = source
+
+    if label == "在读" and not row.get("开始日期"):
+        row["开始日期"] = today_text()
+    if label in ("已读", "放弃"):
+        row["结束日期"] = today_text()
+    elif label in ("在读", "暂停"):
+        row["结束日期"] = ""
+
+    row["最近活动"] = now_iso()
+    if next_action is not None:
+        row["下一步"] = next_action
+    if profile_review is not None:
+        row["画像待审视"] = "是" if profile_review else "否"
+
+    write_book_index(path, rows)
+    return row
 
 
 def profile_content() -> str:
@@ -494,6 +674,8 @@ def ensure_layout(layout: dict) -> None:
 
     if not layout["settings_path"].exists():
         atomic_write_text(layout["settings_path"], settings_content(layout))
+
+    ensure_book_index(layout["book_index_path"])
 
 
 def book_note_path(layout: dict, book: Optional[str], timestamp: Optional[str] = None) -> Path:
@@ -632,6 +814,7 @@ def cmd_check(args: argparse.Namespace) -> int:
         print(describe_layout(layout))
     print(f"状态文件：{spath}")
     print("核心功能：读书模式、读书笔记、阅读画像、每周推荐书单")
+    print("书目索引：记录想读、在读、暂停、已读、放弃，以及画像待审视状态")
     print("阅读画像初始化：可用 profile-context 命令基于授权记忆和项目文档生成资料包")
     print("推荐上下文包：可用 context 命令基于阅读画像、近期笔记、历史书单和授权记忆生成")
     print("自动定时和渠道推送：需要由所在平台单独配置")
@@ -666,6 +849,16 @@ def cmd_start(args: argparse.Namespace) -> int:
         published_at=args.published_at,
         source=args.source,
     )
+    if args.book:
+        update_book_index(
+            layout,
+            book=args.book,
+            status="reading",
+            note_path=note_path,
+            author=args.author,
+            source=args.source,
+            next_action="继续阅读并按需记录",
+        )
     state = {
         "active": True,
         "book": args.book,
@@ -688,6 +881,8 @@ def cmd_start(args: argparse.Namespace) -> int:
     else:
         print("已进入读书模式。当前书名未填写，后续可补充。")
     print(f"读书笔记：{note_path}")
+    if args.book:
+        print(f"书目索引：{layout['book_index_path']}")
     return 0
 
 
@@ -705,6 +900,8 @@ def cmd_stop(args: argparse.Namespace) -> int:
     print("已退出读书模式。")
     if state.get("note_path"):
         print(f"读书笔记：{state['note_path']}")
+    if layout:
+        print(f"书目索引：{layout['book_index_path']}")
     return 0
 
 
@@ -723,6 +920,8 @@ def cmd_status(args: argparse.Namespace) -> int:
     print(f"最近活动：{state.get('last_active_at') or '未知'}")
     if state.get("note_path"):
         print(f"读书笔记：{state['note_path']}")
+    if layout:
+        print(f"书目索引：{layout['book_index_path']}")
     return 0
 
 
@@ -786,6 +985,17 @@ def cmd_note(args: argparse.Namespace) -> int:
         source=args.source or state.get("source"),
     )
     append_note(note_path, kind=args.kind, section=args.section, text=read_note_text(args))
+    if book:
+        update_book_index(
+            layout,
+            book=book,
+            status="reading",
+            note_path=note_path,
+            author=args.author or state.get("author"),
+            source=args.source or state.get("source"),
+            next_action="下次更新阅读画像时审视这条笔记是否影响推荐策略",
+            profile_review=True,
+        )
 
     if state.get("active"):
         state["last_active_at"] = now_iso()
@@ -795,6 +1005,193 @@ def cmd_note(args: argparse.Namespace) -> int:
         save_state(spath, state)
 
     print(f"已写入读书笔记：{note_path}")
+    if book:
+        print(f"书目索引：{layout['book_index_path']}")
+        print("画像待审视：是")
+    return 0
+
+
+def cmd_book_index(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    ensure_layout(layout)
+    print(f"书目索引：{layout['book_index_path']}")
+    print(read_text_if_exists(layout["book_index_path"]).rstrip())
+    return 0
+
+
+def cmd_want(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    ensure_layout(layout)
+    book = current_book_from_args_or_state(args, {})
+    update_book_index(
+        layout,
+        book=book,
+        status="want",
+        author=args.author,
+        source=args.source,
+        next_action=args.next or "等待合适时机开始",
+        profile_review=False,
+    )
+    print(f"已加入想读：{display_book_name(book)}")
+    print(f"书目索引：{layout['book_index_path']}")
+    return 0
+
+
+def cmd_pause(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    ensure_layout(layout)
+    spath = state_path(args, layout)
+    state = load_state(spath)
+    book = current_book_from_args_or_state(args, state)
+    note_path_value = state.get("note_path")
+    note_path = Path(note_path_value) if note_path_value else book_note_path(layout, book)
+    update_book_index(
+        layout,
+        book=book,
+        status="paused",
+        note_path=note_path,
+        author=args.author or state.get("author"),
+        source=args.source or state.get("source"),
+        next_action=args.reason or "暂停阅读，等待恢复",
+    )
+    if normalize_book_name(state.get("book")) == book:
+        state["active"] = False
+        state["paused_at"] = now_iso()
+        state["last_active_at"] = now_iso()
+        save_state(spath, state)
+    print(f"已暂停：{display_book_name(book)}")
+    print(f"书目索引：{layout['book_index_path']}")
+    return 0
+
+
+def cmd_resume(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    ensure_layout(layout)
+    spath = state_path(args, layout)
+    state = load_state(spath)
+    book = current_book_from_args_or_state(args, state)
+    note_path = book_note_path(layout, book)
+    create_book_note(
+        note_path,
+        book=book,
+        edition=args.edition or state.get("edition"),
+        author=args.author or state.get("author"),
+        translator=args.translator or state.get("translator"),
+        publisher=args.publisher or state.get("publisher"),
+        published_at=args.published_at or state.get("published_at"),
+        source=args.source or state.get("source"),
+    )
+    update_book_index(
+        layout,
+        book=book,
+        status="reading",
+        note_path=note_path,
+        author=args.author or state.get("author"),
+        source=args.source or state.get("source"),
+        next_action="继续阅读并按需记录",
+    )
+    state.update(
+        {
+            "active": True,
+            "book": book,
+            "edition": args.edition or state.get("edition"),
+            "author": args.author or state.get("author"),
+            "translator": args.translator or state.get("translator"),
+            "publisher": args.publisher or state.get("publisher"),
+            "published_at": args.published_at or state.get("published_at"),
+            "source": args.source or state.get("source"),
+            "note_path": str(note_path),
+            "root": str(layout["root"]),
+            "notes_dir": str(layout["notes_dir"]),
+            "weekly_dir": str(layout["weekly_dir"]),
+            "resumed_at": now_iso(),
+            "last_active_at": now_iso(),
+        }
+    )
+    save_state(spath, state)
+    print(f"已继续阅读：{display_book_name(book)}")
+    print(f"读书笔记：{note_path}")
+    print(f"书目索引：{layout['book_index_path']}")
+    return 0
+
+
+def cmd_finish(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    ensure_layout(layout)
+    spath = state_path(args, layout)
+    state = load_state(spath)
+    book = current_book_from_args_or_state(args, state)
+    note_path_value = state.get("note_path")
+    note_path = Path(note_path_value) if note_path_value else book_note_path(layout, book)
+    update_book_index(
+        layout,
+        book=book,
+        status="finished",
+        note_path=note_path,
+        author=args.author or state.get("author"),
+        source=args.source or state.get("source"),
+        next_action=args.summary or "做读完复盘，并审视阅读画像是否需要更新",
+        profile_review=True,
+    )
+    if normalize_book_name(state.get("book")) == book:
+        state["active"] = False
+        state["finished_at"] = now_iso()
+        state["last_active_at"] = now_iso()
+        save_state(spath, state)
+    print(f"已标记读完：{display_book_name(book)}")
+    print(f"书目索引：{layout['book_index_path']}")
+    print("画像待审视：是")
+    return 0
+
+
+def cmd_abandon(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    ensure_layout(layout)
+    spath = state_path(args, layout)
+    state = load_state(spath)
+    book = current_book_from_args_or_state(args, state)
+    note_path_value = state.get("note_path")
+    note_path = Path(note_path_value) if note_path_value else book_note_path(layout, book)
+    update_book_index(
+        layout,
+        book=book,
+        status="abandoned",
+        note_path=note_path,
+        author=args.author or state.get("author"),
+        source=args.source or state.get("source"),
+        next_action=args.reason or "记录放弃原因，并审视后续推荐是否避开同类书",
+        profile_review=True,
+    )
+    if normalize_book_name(state.get("book")) == book:
+        state["active"] = False
+        state["abandoned_at"] = now_iso()
+        state["last_active_at"] = now_iso()
+        save_state(spath, state)
+    print(f"已标记放弃：{display_book_name(book)}")
+    print(f"书目索引：{layout['book_index_path']}")
+    print("画像待审视：是")
+    return 0
+
+
+def cmd_profile_reviewed(args: argparse.Namespace) -> int:
+    layout = resolve_layout(args)
+    ensure_layout(layout)
+    state = load_state(state_path(args, layout))
+    book = current_book_from_args_or_state(args, state)
+    rows = read_book_index(layout["book_index_path"])
+    row = find_book_row(rows, book)
+    status = args.status or BOOK_STATUS_KEYS.get((row or {}).get("状态", ""), "reading")
+    update_book_index(
+        layout,
+        book=book,
+        status=status,
+        author=args.author or state.get("author"),
+        source=args.source or state.get("source"),
+        next_action=args.next or "画像已审视，继续按当前策略阅读",
+        profile_review=False,
+    )
+    print(f"已清除画像待审视：{display_book_name(book)}")
+    print(f"书目索引：{layout['book_index_path']}")
     return 0
 
 
@@ -1044,6 +1441,23 @@ def cmd_context(args: argparse.Namespace) -> int:
             ]
         )
 
+    book_index_path = layout["book_index_path"]
+    lines.extend(["## 书目索引", ""])
+    if book_index_path.exists():
+        lines.extend(
+            [
+                render_file_excerpt(
+                    book_index_path,
+                    title=book_index_path.name,
+                    max_chars=args.max_chars,
+                    truncated_files=truncated_files,
+                ),
+                "",
+            ]
+        )
+    else:
+        lines.extend(["未找到书目索引。", ""])
+
     if profile_path.exists():
         lines.extend(
             [
@@ -1140,6 +1554,8 @@ def cmd_context(args: argparse.Namespace) -> int:
             "- 每本书必须写质量依据，可参考豆瓣、Goodreads、出版社页、图书馆目录、课程书单、可靠书评、奖项、引用情况或长期读者口碑。",
             "- 评分不能作为唯一理由；样本少、版本混乱、争议大或口碑分裂时，写入质量风险。",
             "- 未完成事实核验或质量判断的书，不能作为本周最优先阅读项。",
+            "- 先检查书目索引，避免重复推荐已读、正在读、暂停或明确放弃的书；如果仍要推荐，必须说明理由。",
+            "- 书目索引里标记“画像待审视”的书，要先判断是否需要更新阅读画像或本周推荐策略。",
             "- 推荐理由要连接用户近期问题、阅读画像或读书笔记，不要只写泛泛好书。",
             "- 过去 8 周已推荐过的书，除非用户明确要求，不重复推荐。",
             "- 同一主题每周最多推荐 2 本；每周至少 1 本短平快可执行书，最多 1 本重型理论书。",
@@ -1315,12 +1731,41 @@ def build_parser() -> argparse.ArgumentParser:
     subparsers.add_parser("check", help="检查配置")
     subparsers.add_parser("plan", help="只预览将创建或复用的目录，不写入文件")
     subparsers.add_parser("init", help="创建或补齐每日读书目录结构")
+    subparsers.add_parser("book-index", help="查看书目索引")
 
     start = subparsers.add_parser("start", help="进入读书模式")
     add_book_args(start)
 
+    want = subparsers.add_parser("want", help="加入想读书目")
+    add_book_args(want)
+    want.add_argument("--next", help="下一步动作")
+
     subparsers.add_parser("stop", help="退出读书模式")
     subparsers.add_parser("status", help="查看读书模式状态")
+
+    pause = subparsers.add_parser("pause", help="暂停当前或指定书目")
+    add_book_args(pause)
+    pause.add_argument("--reason", help="暂停原因或下一步")
+
+    resume = subparsers.add_parser("resume", help="继续当前或指定书目")
+    add_book_args(resume)
+
+    finish = subparsers.add_parser("finish", help="标记当前或指定书目已读")
+    add_book_args(finish)
+    finish.add_argument("--summary", help="读完后的复盘或下一步")
+
+    abandon = subparsers.add_parser("abandon", help="标记当前或指定书目放弃")
+    add_book_args(abandon)
+    abandon.add_argument("--reason", help="放弃原因或后续推荐避让")
+
+    reviewed = subparsers.add_parser("profile-reviewed", help="标记某本书的画像审视已处理")
+    add_book_args(reviewed)
+    reviewed.add_argument(
+        "--status",
+        choices=tuple(BOOK_STATUS_LABELS.keys()),
+        help="保留或改写该书状态；默认沿用书目索引里的状态",
+    )
+    reviewed.add_argument("--next", help="下一步动作")
 
     expire = subparsers.add_parser("expire", help="超过指定分钟数无活动后退出")
     expire.add_argument("--minutes", type=int, default=60)
@@ -1392,9 +1837,16 @@ def main() -> int:
         "check": cmd_check,
         "plan": cmd_plan,
         "init": cmd_init,
+        "book-index": cmd_book_index,
         "start": cmd_start,
+        "want": cmd_want,
         "stop": cmd_stop,
         "status": cmd_status,
+        "pause": cmd_pause,
+        "resume": cmd_resume,
+        "finish": cmd_finish,
+        "abandon": cmd_abandon,
+        "profile-reviewed": cmd_profile_reviewed,
         "expire": cmd_expire,
         "note": cmd_note,
         "recommendation-draft": cmd_recommendation,
