@@ -64,6 +64,13 @@ def quote_yaml(value: Optional[str]) -> str:
     return f'"{escaped}"'
 
 
+def atomic_write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(f".{path.name}.tmp")
+    tmp.write_text(text, encoding="utf-8")
+    tmp.replace(path)
+
+
 def existing_weekly_dir(root: Path) -> Optional[Path]:
     for name in WEEKLY_DIR_NAMES:
         path = root / name
@@ -336,8 +343,7 @@ def load_state(path: Path) -> dict:
 
 
 def save_state(path: Path, state: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    atomic_write_text(path, json.dumps(state, ensure_ascii=False, indent=2) + "\n")
 
 
 def settings_content(layout: dict) -> str:
@@ -404,8 +410,16 @@ status: active
 - 未读取或未授权来源：
 - 可信度：
 
+## 稳定画像
+
+长期有效，除非多次证据推翻。
+
 ## 用户现在在做什么
 
+
+## 阶段画像
+
+最近 4-8 周有效。
 
 ## 近期关注的问题
 
@@ -415,6 +429,10 @@ status: active
 
 ## 正在补的能力
 
+
+## 临时信号
+
+最近 1-2 周出现，暂不写成稳定结论。
 
 ## 更适合的书籍类型
 
@@ -433,6 +451,12 @@ status: active
 
 ## 本周变化
 
+
+## 画像变更记录
+
+| 日期 | 变更 | 依据 | 可信度 |
+|---|---|---|---|
+
 """
 
 
@@ -442,10 +466,10 @@ def ensure_layout(layout: dict) -> None:
     layout["weekly_dir"].mkdir(parents=True, exist_ok=True)
 
     if not layout["profile_path"].exists():
-        layout["profile_path"].write_text(profile_content(), encoding="utf-8")
+        atomic_write_text(layout["profile_path"], profile_content())
 
     if not layout["settings_path"].exists():
-        layout["settings_path"].write_text(settings_content(layout), encoding="utf-8")
+        atomic_write_text(layout["settings_path"], settings_content(layout))
 
 
 def book_note_path(layout: dict, book: Optional[str], timestamp: Optional[str] = None) -> Path:
@@ -497,9 +521,18 @@ updated_at: {quote_yaml(now_iso())}
 | 出版社 | {publisher or ""} |
 | 出版日期 | {published_at or ""} |
 | 来源 | {source or ""} |
+| 推荐来源 | {source or ""} |
+| 本书解决的问题 |  |
+| 版本可信度 |  |
 
 ## 一句话判断
 
+
+## 我为什么读这本书
+
+- 当前问题：
+- 期待解决：
+- 不期待解决：
 
 ## 主要内容
 
@@ -513,11 +546,18 @@ updated_at: {quote_yaml(now_iso())}
 ## 可执行行动
 
 
+## 反对意见
+
+我不同意、怀疑或需要验证的地方：
+
+## 复读索引
+
+未来什么情况下值得重看：
+
 ## 待确认
 
 """
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
+    atomic_write_text(path, content)
 
 
 def touch_updated_at(path: Path) -> None:
@@ -538,7 +578,7 @@ def touch_updated_at(path: Path) -> None:
     if not replaced:
         lines.append(f"updated_at: {quote_yaml(now_iso())}")
     new_text = "---" + "\n".join(lines) + "\n---" + parts[2]
-    path.write_text(new_text, encoding="utf-8")
+    atomic_write_text(path, new_text)
 
 
 def append_note(path: Path, *, kind: str, section: Optional[str], text: str) -> None:
@@ -754,9 +794,33 @@ status: draft
 - 阅读画像：
 - 近期读书笔记：
 - 历史推荐书单：
+- 历史推荐反馈：
 - 额外授权记忆：
 - 未读取或未授权来源：
 - 本周推荐策略：
+
+## 历史推荐反馈
+
+- 已推荐但未读：
+- 已推荐且已开始：
+- 已推荐且读完：
+- 明确不感兴趣：
+- 暂缓原因：
+
+## 本周去重和冷却
+
+- 过去 8 周已推荐过的书：
+- 本周避免重复的主题：
+- 本周最多推荐 1 本重型理论书：
+- 本周至少推荐 1 本短平快可执行书：
+
+## 本周配比
+
+- 主线能力书：
+- 当前项目工具书：
+- 判断力/管理/商业书：
+- 轻量补充书：
+- 储备书：
 
 ## 推荐书
 
@@ -766,6 +830,7 @@ status: draft
 - 推荐版本：
 - 出版社：
 - 出版日期：
+- 事实核验状态：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -777,6 +842,7 @@ status: draft
 - 推荐版本：
 - 出版社：
 - 出版日期：
+- 事实核验状态：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -788,6 +854,7 @@ status: draft
 - 推荐版本：
 - 出版社：
 - 出版日期：
+- 事实核验状态：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -799,6 +866,7 @@ status: draft
 - 推荐版本：
 - 出版社：
 - 出版日期：
+- 事实核验状态：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -810,6 +878,7 @@ status: draft
 - 推荐版本：
 - 出版社：
 - 出版日期：
+- 事实核验状态：
 - 为什么推荐：
 - 适合解决的问题：
 - 推荐读法：
@@ -817,6 +886,9 @@ status: draft
 
 ## 本周读法
 
+- 本周最应该先读：
+- 如果只有 30 分钟：
+- 读完后应该产出：
 
 ## 发送记录
 
@@ -834,8 +906,9 @@ def cmd_recommendation(args: argparse.Namespace) -> int:
     week = args.week or current_iso_week()
     path = layout["weekly_dir"] / f"{week} 每周推荐书单.md"
     if not path.exists():
-        path.write_text(weekly_template(week), encoding="utf-8")
-    print(f"已准备每周推荐书单：{path}")
+        atomic_write_text(path, weekly_template(week))
+    print(f"已准备每周推荐书单草稿：{path}")
+    print("注意：这里只创建草稿；还需要 Agent 读取上下文包后填入 5 本具体推荐书。")
     return 0
 
 
@@ -928,8 +1001,11 @@ def cmd_context(args: argparse.Namespace) -> int:
             "",
             "- 固定推荐 5 本书。",
             "- 在“本周判断依据”里列出读取范围和未授权来源。",
-            "- 不确定的作者、版本、出版社、出版日期写“不确定”。",
+            "- 不确定的作者、版本、译本、出版社、出版日期和可获得性写“不确定，需核验”。",
             "- 推荐理由要连接用户近期问题、阅读画像或读书笔记，不要只写泛泛好书。",
+            "- 过去 8 周已推荐过的书，除非用户明确要求，不重复推荐。",
+            "- 同一主题每周最多推荐 2 本；每周至少 1 本短平快可执行书，最多 1 本重型理论书。",
+            "- 写清本周最应该先读哪一本，以及只有 30 分钟时该读哪里。",
             "- 如果没有配置发送渠道，只写入文件，不声称已发送。",
         ]
     )
@@ -937,8 +1013,7 @@ def cmd_context(args: argparse.Namespace) -> int:
     output = "\n".join(lines).rstrip() + "\n"
     if args.output:
         out_path = Path(args.output).expanduser()
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(output, encoding="utf-8")
+        atomic_write_text(out_path, output)
         print(f"已写入推荐上下文包：{out_path}")
     else:
         print(output, end="")
@@ -960,9 +1035,11 @@ def cmd_profile_context(args: argparse.Namespace) -> int:
         "",
         "## 使用方式",
         "",
+        "`profile-context` 只生成资料包，不等于已经完成阅读画像初始化。",
         "把下面资料归纳进 `阅读画像.md`，用于以后每周推荐书单。",
         "只保留稳定偏好、当前项目方向、反复出现的问题和需要补的能力。",
         "不要把原始聊天、私密配置、账号、Token、Cookie、代理细节写入阅读画像。",
+        "写入后还要在 `设置.md` 记录阅读画像初始化状态和已授权来源。",
         "",
         "## 读取范围",
         "",
@@ -1035,6 +1112,9 @@ def cmd_profile_context(args: argparse.Namespace) -> int:
             "## 写入阅读画像时必须形成的结论",
             "",
             "- 用户现在在做什么。",
+            "- 稳定画像：长期有效，除非多次证据推翻。",
+            "- 阶段画像：最近 4-8 周有效。",
+            "- 临时信号：最近 1-2 周出现，暂不写成稳定结论。",
             "- 近期反复关注的问题。",
             "- 正在补的能力。",
             "- 更适合的书籍类型。",
@@ -1042,6 +1122,7 @@ def cmd_profile_context(args: argparse.Namespace) -> int:
             "- 下一阶段推荐策略。",
             "- 优先推荐方向。",
             "- 暂不推荐方向。",
+            "- 画像变更记录。",
             "- 已读取来源、未读取来源和可信度。",
             "",
             "## 后续每周推荐规则",
@@ -1063,9 +1144,9 @@ def cmd_profile_context(args: argparse.Namespace) -> int:
         out_path = None
 
     if out_path:
-        out_path.parent.mkdir(parents=True, exist_ok=True)
-        out_path.write_text(output, encoding="utf-8")
+        atomic_write_text(out_path, output)
         print(f"已写入阅读画像初始化资料包：{out_path}")
+        print("注意：这里只生成资料包；还需要 Agent 归纳后写入阅读画像并更新设置文件。")
     else:
         print(output, end="")
     return 0
@@ -1117,7 +1198,10 @@ def build_parser() -> argparse.ArgumentParser:
     note.add_argument("--text", help="笔记内容")
     note.add_argument("--stdin", action="store_true", help="从标准输入读取笔记内容")
 
-    recommendation = subparsers.add_parser("recommendation", help="创建每周推荐书单草稿")
+    recommendation_draft = subparsers.add_parser("recommendation-draft", help="创建每周推荐书单草稿")
+    recommendation_draft.add_argument("--week", help="ISO 周，例如 2026-W25")
+
+    recommendation = subparsers.add_parser("recommendation", help="兼容旧命令：创建每周推荐书单草稿")
     recommendation.add_argument("--week", help="ISO 周，例如 2026-W25")
 
     context = subparsers.add_parser("context", help="生成每周推荐用的上下文包")
@@ -1167,6 +1251,7 @@ def main() -> int:
         "status": cmd_status,
         "expire": cmd_expire,
         "note": cmd_note,
+        "recommendation-draft": cmd_recommendation,
         "recommendation": cmd_recommendation,
         "context": cmd_context,
         "profile-context": cmd_profile_context,
