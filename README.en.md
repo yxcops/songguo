@@ -5,7 +5,7 @@
 This repository collects AI Skills that I use, refine, and gradually publish. Each Skill is a structured workflow that an Agent can read and follow to perform recurring tasks more reliably.
 
 [![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-4-10B981?style=for-the-badge)](#skills)
+[![Skills](https://img.shields.io/badge/Skills-5-10B981?style=for-the-badge)](#skills)
 [![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
 
 ![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
@@ -18,6 +18,12 @@ This repository collects AI Skills that I use, refine, and gradually publish. Ea
 ## ⭐ Featured Skills
 
 The Skills I use most and consider easiest for others to inspect and install.
+
+### 📝 Notes & Journaling
+
+**Obsidian Diary**
+
+[obsidian-diary](#obsidian-diary) - Turn Obsidian or local Markdown diary writing, historical backfill, format checks, and export into a stable Agent workflow.
 
 ### 🧠 AI Memory & Collaboration
 
@@ -49,6 +55,7 @@ The Skills I use most and consider easiest for others to inspect and install.
 
 | Name | Skill | Category | One-liner | Install |
 |---|---|---|---|---|
+| Obsidian Diary | [obsidian-diary](#obsidian-diary) | Notes & Journaling | Write current-day diary entries, backfill old entries explicitly, check format, and export text | [Install](https://github.com/yxcops/songguo-skills/tree/main/obsidian-diary) |
 | Shared Memory Hub | [shared-memory-hub](#shared-memory-hub) | Memory & Collaboration | Build a shared Obsidian or Markdown memory vault for multiple AI Agents | [Install](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
 | Daily Reading | [daily-reading](#daily-reading) | Reading & Learning | Enter reading mode, maintain a memory-aware profile, and generate a weekly book list | [Install](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
 | Squirrel Illustration | [xiao-songshu-peitu](#xiao-songshu-peitu) | Content & Visuals | Create fixed squirrel-IP illustration plans and prompts for Chinese content | [Install](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
@@ -72,11 +79,63 @@ Install this skill: https://github.com/yxcops/songguo-skills/tree/main/xiao-song
 
 Different Agents use different installation paths and permissions. Before installing, ask the Agent to read `SKILL.md` and summarize what the Skill does and does not do.
 
+## Publishing Rules
+
+This repository is for Skills that are ready to be inspected and shared. Each Skill should:
+
+- come from a real repeated workflow, not catalog filling;
+- explain what it is for and what it is not for in `SKILL.md`;
+- avoid real private paths, accounts, tokens, cookies, raw chats, or real diaries;
+- verify representative flows in a temporary folder when scripts are included;
+- make platform automation, channel delivery, and external access opt-in and separately configured.
+
 <a id="skills"></a>
 
 ---
 
 ## 🧰 Skills
+
+<a id="obsidian-diary"></a>
+
+### Obsidian Diary (obsidian-diary)
+
+Turns Obsidian or local Markdown diary handling into a reusable workflow: current-day entries go to today, historical entries require explicit backfill intent, old imports do not fake live timestamps, and checks or exports can be handled by the bundled script.
+
+It is not a private Hermes configuration package and contains no real diary content. After installation, the user still needs to confirm the Obsidian vault path and diary root.
+
+**Best for**
+
+- Writing Obsidian diary entries with an AI Agent.
+- Separating "write today's diary" from "backfill an old date".
+- Importing old diary text into dated Markdown files.
+- Checking file names, month folders, weekdays, and basic format.
+- Exporting a day's diary text for review or sharing.
+
+**Not for**
+
+- Letting an Agent read all private diary files by default.
+- Automatically taking over Hermes, Telegram, Feishu, WeChat, or other channel configuration.
+- Turning a diary workflow into a database, daemon, or fully automated platform.
+
+**Example prompts**
+
+```text
+Use obsidian-diary to write today's Obsidian diary entry.
+```
+
+```text
+Use obsidian-diary to backfill my diary for 2021-09-20.
+```
+
+```text
+Use obsidian-diary to check my diary folder format.
+```
+
+Install link:
+
+```text
+https://github.com/yxcops/songguo-skills/tree/main/obsidian-diary
+```
 
 <a id="shared-memory-hub"></a>
 
@@ -234,6 +293,7 @@ https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 
 | Skill | Codex | Claude Code | Hermes | OpenClaw | Notes |
 |---|---|---|---|---|---|
+| obsidian-diary | Supported | Supported | Supported | Supported | Needs a confirmed local diary path; channel automation is platform-specific |
 | shared-memory-hub | Supported | Supported | Supported | Supported | Needs access to local Markdown files |
 | daily-reading | Supported | Supported | Supported | Supported | Core workflow is portable; scheduling and channel delivery are platform-dependent |
 | xiao-songshu-peitu | Supported | Supported | Tool-dependent | Tool-dependent | Needs image-generation ability, or can deliver prompts only |

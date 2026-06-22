@@ -5,7 +5,7 @@
 这里收集我自用并逐步公开的 AI Skills。每个 Skill 都是一个可以被 Agent 读取的结构化工作流，用来把重复任务做得更稳、更省心。
 
 [![License](https://img.shields.io/badge/License-MIT-3B82F6?style=for-the-badge)](./LICENSE)
-[![Skills](https://img.shields.io/badge/Skills-4-10B981?style=for-the-badge)](#skills)
+[![Skills](https://img.shields.io/badge/Skills-5-10B981?style=for-the-badge)](#skills)
 [![AgentSkills](https://img.shields.io/badge/AgentSkills-Standard-8B5CF6?style=for-the-badge)](https://agentskills.io)
 
 ![Codex](https://img.shields.io/badge/Codex-Skill-10B981?style=flat-square&logo=openai&logoColor=white)
@@ -18,6 +18,12 @@
 ## ⭐ 精选 Skill
 
 最常用、最适合别人直接查看和安装的几个 Skill。
+
+### 📝 记录与日记
+
+**Obsidian 日记本**
+
+[obsidian-diary](#obsidian-diary) - 把 Obsidian 或本地 Markdown 日记本里的当天记录、历史补写、格式检查和导出整理成一套稳定规则。
 
 ### 🧠 记忆与协作
 
@@ -49,6 +55,7 @@
 
 | 中文名 | Skill | 分类 | 一句话 | 安装链接 |
 |---|---|---|---|---|
+| Obsidian 日记本 | [obsidian-diary](#obsidian-diary) | 记录与日记 | 稳定记录当天日记、明确补写历史日记、检查格式并导出文本 | [安装](https://github.com/yxcops/songguo-skills/tree/main/obsidian-diary) |
 | 共享记忆库 | [shared-memory-hub](#shared-memory-hub) | 记忆与协作 | 给多个 AI Agent 共用一套 Obsidian 或本地 Markdown 共享记忆库 | [安装](https://github.com/yxcops/songguo-skills/tree/main/shared-memory-hub) |
 | 每日读书 | [daily-reading](#daily-reading) | 阅读与学习 | 进入读书模式，基于授权记忆维护阅读画像并生成每周推荐书单 | [安装](https://github.com/yxcops/songguo-skills/tree/main/daily-reading) |
 | 小松鼠配图 | [xiao-songshu-peitu](#xiao-songshu-peitu) | 内容与配图 | 用固定小松鼠 IP 为中文内容生成正文配图方案和提示词 | [安装](https://github.com/yxcops/songguo-skills/tree/main/xiao-songshu-peitu) |
@@ -72,11 +79,63 @@
 
 不同 Agent 的安装目录和权限不同。安装前建议让 Agent 先读取 `SKILL.md`，确认它会做什么、不会做什么。
 
+## 发布规则
+
+这个仓库只放准备公开审阅和分享的 Skill。每个 Skill 都尽量满足：
+
+- 来自真实重复使用的问题，不为凑数量创建。
+- `SKILL.md` 里写清楚适合什么、不适合什么。
+- 不包含真实私人路径、账号、Token、Cookie、原始聊天或真实日记。
+- 如果带脚本，至少用临时目录跑过代表性流程。
+- 如果涉及外部平台、自动化或渠道推送，要明确哪些需要用户单独授权和配置。
+
 <a id="skills"></a>
 
 ---
 
 ## 🧰 Skills
+
+<a id="obsidian-diary"></a>
+
+### Obsidian 日记本（obsidian-diary）
+
+把 Obsidian 或本地 Markdown 日记本的记录方式沉淀成一套可复用规则：今天的日记写到今天，明确补写才写历史日期，旧日记导入不伪造时间线，检查和导出可以用自带脚本完成。
+
+它不是私人 Hermes 配置包，也不包含真实日记内容。安装后需要先确认 Obsidian 库路径和日记根目录。
+
+**适合**
+
+- 想用 AI Agent 帮你稳定写入 Obsidian 日记。
+- 想区分“今天记录”和“补写历史”，避免写错日期。
+- 想把旧日记按日期导入为 Markdown 文件。
+- 想检查日记文件名、月份目录、星期和基础格式。
+- 想导出某天日记文本用于整理或分享。
+
+**不适合**
+
+- 想让 Agent 默认读取全部私人日记。
+- 想自动接管 Hermes、Telegram、飞书、微信等渠道配置。
+- 想把日记系统扩成数据库、后台服务或全自动平台。
+
+**怎么触发**
+
+```text
+请使用 obsidian-diary Skill，帮我写一条今天的 Obsidian 日记。
+```
+
+```text
+请使用 obsidian-diary，帮我补写 2021 年 9 月 20 日的旧日记。
+```
+
+```text
+请使用 obsidian-diary，检查我的日记本格式。
+```
+
+安装链接：
+
+```text
+https://github.com/yxcops/songguo-skills/tree/main/obsidian-diary
+```
 
 <a id="shared-memory-hub"></a>
 
@@ -234,6 +293,7 @@ https://github.com/yxcops/songguo-skills/tree/main/codex-skill-launchpad
 
 | Skill | Codex | Claude Code | Hermes | OpenClaw | 说明 |
 |---|---|---|---|---|---|
+| obsidian-diary | 支持 | 支持 | 支持 | 支持 | 需要用户确认本地日记路径；渠道自动化需平台单独配置 |
 | shared-memory-hub | 支持 | 支持 | 支持 | 支持 | 需要能读写本地 Markdown 文件 |
 | daily-reading | 支持 | 支持 | 支持 | 支持 | 核心规则通用；自动定时和渠道推送取决于平台 |
 | xiao-songshu-peitu | 支持 | 支持 | 视工具而定 | 视工具而定 | 需要图片生成能力或可交付提示词 |

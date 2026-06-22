@@ -1,0 +1,14 @@
+# Copy this file outside the public Skill directory before filling real paths.
+
+vault: "/path/to/your/obsidian-vault"
+diary_root: "日记本"
+
+format:
+  month_folder: "YYYY-MM"
+  date_file: "YYYY年M月D日，星期X.md"
+  current_entry: "callout"
+  backfill_entry: "heading"
+
+privacy:
+  read_existing_diaries_by_default: false
+  allow_full_vault_scan_by_default: false
