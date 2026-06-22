@@ -37,12 +37,43 @@ FIELDS = [
     "applies_to:",
 ]
 
+ALLOWED_FIELDS = {
+    "source_platform",
+    "source_device",
+    "source_type",
+    "created_at",
+    "status",
+    "applies_to",
+}
+
+ALLOWED_SOURCE_PLATFORMS = {
+    "Codex",
+    "Hermes",
+    "Claude Code",
+    "User",
+    "Mixed",
+}
+
+SOURCE_TYPE_BY_DIR = {
+    "01-核心规则": {"核心规则"},
+    "02-可复用经验库": {"可复用经验"},
+    "03-候选确认清单": {"候选记忆"},
+    "04-聊天摘要": {"聊天摘要"},
+    "05-项目资料": {"项目资料", "项目索引", "模板", "待办清单"},
+}
+
 SENSITIVE_PATTERNS = [
     re.compile(r"api[_-]?key\\s*[:=]", re.I),
     re.compile(r"token\\s*[:=]", re.I),
     re.compile(r"cookie\\s*[:=]", re.I),
     re.compile(r"password\\s*[:=]", re.I),
     re.compile(r"/Users/[A-Za-z0-9._-]+/"),
+]
+
+STALE_SOURCE_WORDING = [
+    "写入或" + "沉淀这条内容",
+    "当前写入或" + "沉淀",
+    "source_platform 应该写" + " Codex",
 ]
 
 
@@ -66,6 +97,40 @@ def has_required_fields(text: str) -> bool:
         return False
     frontmatter = text[:end]
     return all(field in frontmatter for field in FIELDS)
+
+
+def parse_frontmatter(text: str) -> dict[str, str]:
+    if not text.startswith("---"):
+        return {}
+    end = text.find("---", 3)
+    if end == -1:
+        return {}
+    result: dict[str, str] = {}
+    for line in text[3:end].splitlines():
+        if not line or line.startswith(" ") or ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        result[key.strip()] = value.strip().strip('"').strip("'")
+    return result
+
+
+def first_h1(text: str) -> str | None:
+    for line in text.splitlines():
+        if line.startswith("# "):
+            return line[2:].strip()
+    return None
+
+
+def platform_prefix(value: str | None) -> str | None:
+    if not value:
+        return None
+    match = re.match(r"(?:\d{4}-\d{2}-\d{2}-)?([^（\-]+)（", value)
+    if not match:
+        return None
+    prefix = match.group(1)
+    if prefix not in ALLOWED_SOURCE_PLATFORMS:
+        return None
+    return prefix
 
 
 def main() -> None:
@@ -95,6 +160,37 @@ def main() -> None:
             text = note.read_text(encoding="utf-8", errors="replace")
             if rel.name != "00-共享记忆库入口.md" and not has_required_fields(text):
                 warnings.append(f"缺少标准属性字段：{rel}")
+            metadata = parse_frontmatter(text)
+            if metadata:
+                extra_fields = sorted(set(metadata) - ALLOWED_FIELDS)
+                if extra_fields:
+                    warnings.append(f"属性区包含非标准字段 {extra_fields}：{rel}")
+
+                source_platform = metadata.get("source_platform")
+                if source_platform and source_platform not in ALLOWED_SOURCE_PLATFORMS:
+                    warnings.append(f"source_platform 值不在常见来源列表：{rel}")
+                if source_platform in ALLOWED_SOURCE_PLATFORMS:
+                    file_prefix = platform_prefix(rel.name)
+                    heading_prefix = platform_prefix(first_h1(text))
+                    if file_prefix and file_prefix != source_platform:
+                        warnings.append(
+                            f"文件名来源前缀与 source_platform 不一致：{rel}"
+                        )
+                    if heading_prefix and heading_prefix != source_platform:
+                        warnings.append(
+                            f"一级标题来源前缀与 source_platform 不一致：{rel}"
+                        )
+
+                source_type = metadata.get("source_type")
+                expected_types = SOURCE_TYPE_BY_DIR.get(rel.parts[0]) if rel.parts else None
+                if expected_types and source_type and source_type not in expected_types:
+                    warnings.append(
+                        f"source_type 与所在目录不一致：{rel}（应为 {', '.join(sorted(expected_types))}）"
+                    )
+            for wording in STALE_SOURCE_WORDING:
+                if wording in text:
+                    warnings.append(f"可能残留旧来源字段口径：{rel}")
+                    break
             for pattern in SENSITIVE_PATTERNS:
                 if pattern.search(text):
                     warnings.append(f"可能包含敏感信息或机器专属路径：{rel}")

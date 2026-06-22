@@ -46,6 +46,10 @@ AI智能体记忆库/03-候选确认清单
 新文件必须包含：
 source_platform、source_device、source_type、created_at、status、applies_to
 
+Hermes 自己会话生成的摘要或候选，`source_platform` 写 `Hermes`。如果 Hermes 只是整理其他平台已经产生的候选或资料，保留原始来源，不要因为本轮由 Hermes 处理就改写为 Hermes。
+
+如果本次整理发现共享记忆库规则需要补充，但当前 Hermes cron 环境只能写本地提示词或摘要，请把该补充写入候选记忆或待确认摘要，并提醒后续同步更新 shared-memory-hub Skill；不要只修改 Hermes 本地规则。
+
 不要写入密码、Token、Cookie、API Key、账号恢复码或未脱敏的敏感配置。
 
 如果没有任何有价值的会话，回复 [SILENT]。
